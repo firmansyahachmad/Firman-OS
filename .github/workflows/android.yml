@@ -2,8 +2,7 @@ name: Build and Verify Firman.OS V0.3
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -19,8 +18,17 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Locate preinstalled Android SDK
+        shell: bash
+        run: |
+          set -euxo pipefail
+          SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          test -d "$SDK"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          echo "$SDK/platform-tools" >> "$GITHUB_PATH"
+          ls -la "$SDK"
+          ls -la "$SDK/build-tools"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -31,17 +39,27 @@ jobs:
         run: gradle clean :app:assembleDebug --stacktrace
 
       - name: Prepare APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk Firman-OS-V0.3-Android14.apk
-
-      - name: Verify APK
         run: |
+          set -euxo pipefail
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          cp app/build/outputs/apk/debug/app-debug.apk Firman-OS-V0.3-Android14.apk
+
+      - name: Verify APK archive, signature and metadata
+        shell: bash
+        run: |
+          set -euxo pipefail
           test -s Firman-OS-V0.3-Android14.apk
           unzip -t Firman-OS-V0.3-Android14.apk
-          BUILD_TOOLS=$(ls -1 "$ANDROID_HOME/build-tools" | sort -V | tail -1)
-          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner" verify --verbose Firman-OS-V0.3-Android14.apk
-          "$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt" dump badging Firman-OS-V0.3-Android14.apk | tee apk-badging.txt
-          grep "package: name='com.firman.os'" apk-badging.txt
-          grep "targetSdkVersion:'34'" apk-badging.txt
+          BUILD_TOOLS=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort -V | tail -1)
+          test -n "$BUILD_TOOLS"
+          APKSIGNER="$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner"
+          AAPT="$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt"
+          test -x "$APKSIGNER"
+          test -x "$AAPT"
+          "$APKSIGNER" verify --verbose --print-certs Firman-OS-V0.3-Android14.apk | tee apk-signature.txt
+          "$AAPT" dump badging Firman-OS-V0.3-Android14.apk | tee apk-badging.txt
+          grep -F "package: name='com.firman.os'" apk-badging.txt
+          grep -F "targetSdkVersion:'34'" apk-badging.txt
           sha256sum Firman-OS-V0.3-Android14.apk | tee Firman-OS-V0.3-Android14.sha256
 
       - name: Upload verified APK
@@ -52,4 +70,5 @@ jobs:
             Firman-OS-V0.3-Android14.apk
             Firman-OS-V0.3-Android14.sha256
             apk-badging.txt
+            apk-signature.txt
           if-no-files-found: error
