@@ -10,10 +10,10 @@ android {
 
     defaultConfig {
         applicationId = "com.firman.os"
-        minSdk = 34
+        minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0"
     }
 
     buildFeatures { compose = true }
@@ -23,6 +23,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
+
+    buildTypes {
+        debug {
+            isMinifyEnabled = false
+        }
+    }
 }
 
 dependencies {
