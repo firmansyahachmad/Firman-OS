@@ -18,32 +18,30 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK tools
-        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+
+      - name: Install required Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - name: Clean and build universal debug APK
         run: |
           gradle clean :app:assembleDebug --stacktrace
           cp app/build/outputs/apk/debug/app-debug.apk Firman-OS-V0.3-Android14.apk
 
-      - name: Verify APK is readable
+      - name: Verify APK archive integrity
         run: |
           unzip -t Firman-OS-V0.3-Android14.apk
           test -s Firman-OS-V0.3-Android14.apk
 
       - name: Verify APK signature
-        run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs Firman-OS-V0.3-Android14.apk
+        run: "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs Firman-OS-V0.3-Android14.apk
 
-      - name: Verify package and SDK metadata
+      - name: Verify package and Android metadata
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging Firman-OS-V0.3-Android14.apk | tee apk-badging.txt
           grep "package: name='com.firman.os'" apk-badging.txt
