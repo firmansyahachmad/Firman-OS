@@ -1,4 +1,4 @@
-name: Build Firman.OS APK
+name: Build and Verify Firman.OS V0.3
 
 on:
   push:
@@ -11,19 +11,53 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK tools
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Build debug APK
-        run: gradle :app:assembleDebug
-      - name: Upload Firman.OS APK
+
+      - name: Clean and build universal debug APK
+        run: |
+          gradle clean :app:assembleDebug --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk Firman-OS-V0.3-Android14.apk
+
+      - name: Verify APK is readable
+        run: |
+          unzip -t Firman-OS-V0.3-Android14.apk
+          test -s Firman-OS-V0.3-Android14.apk
+
+      - name: Verify APK signature
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs Firman-OS-V0.3-Android14.apk
+
+      - name: Verify package and SDK metadata
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging Firman-OS-V0.3-Android14.apk | tee apk-badging.txt
+          grep "package: name='com.firman.os'" apk-badging.txt
+          grep "targetSdkVersion:'34'" apk-badging.txt
+
+      - name: Calculate checksum
+        run: sha256sum Firman-OS-V0.3-Android14.apk | tee Firman-OS-V0.3-Android14.sha256
+
+      - name: Upload verified APK
         uses: actions/upload-artifact@v4
         with:
-          name: Firman-OS-V0.1-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: Firman-OS-V0.3-VERIFIED-Android14
+          path: |
+            Firman-OS-V0.3-Android14.apk
+            Firman-OS-V0.3-Android14.sha256
+            apk-badging.txt
+          if-no-files-found: error
