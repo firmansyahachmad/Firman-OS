@@ -16,3 +16,9 @@ Firman.OS is an experimental low-cost motorcycle dashboard designed for an Andro
 - Android-first architecture
 
 Next: route/ETA, traffic information, richer ride UI, notification integration, trip history, and configurable vehicle/fuel profiles.
+
+## V0.4
+
+- Added a **WEB APP ↗** button in the top bar to open the configured Google Apps Script Web App in the device's browser.
+- Keeps the existing motorcycle dashboard, GPS speed, trip metrics, and Google Maps navigation unchanged.
+- The Web App requires its own access permissions/login, as configured in Google Apps Script.
