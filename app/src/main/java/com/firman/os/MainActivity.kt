@@ -36,6 +36,8 @@ private val Green = Color(0xFF70E5A0)
 private val Amber = Color(0xFFFFC857)
 private val Muted = Color(0xFF8D98A8)
 
+private const val WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,10 +91,26 @@ fun FirmanDashboard() {
                     }
                     Column {
                         Text("FIRMAN.OS", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Black)
-                        Text("RIDE COMPUTER • ANDROID 14 • V0.2", color = Muted, fontSize = 10.sp)
+                        Text("RIDE COMPUTER • ANDROID 14 • V0.4", color = Muted, fontSize = 10.sp)
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(WEB_APP_URL))
+                            intent.addCategory(Intent.CATEGORY_BROWSABLE)
+                            runCatching { context.startActivity(intent) }.onFailure {
+                                android.widget.Toast.makeText(
+                                    context, "Browser tidak tersedia untuk membuka Web App", android.widget.Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        },
+                        modifier = Modifier.height(38.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Accent)
+                    ) {
+                        Text("WEB APP ↗", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    }
                     Text("GPS ●", color = Green, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                     Text(if (riding) "● RIDING" else "● READY", color = if (riding) Accent else Muted, fontWeight = FontWeight.Bold)
                 }
