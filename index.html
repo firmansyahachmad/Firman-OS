@@ -94,7 +94,7 @@
   </style>
 </head>
 <body>
-  <div class="shell">
+  <div class="shell" id="top">
     <header>
       <div class="brand">
         <div class="logo" aria-hidden="true">F</div>
@@ -203,7 +203,7 @@
       const $ = (id) => document.getElementById(id);
       const storeKey = "firman-os-web-v1";
       const idr = new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0});
-      const safeRead = () => { try { return JSON.parse(localStorage.getItem(storeKey) || "{}"); } catch (_) { return {}; } };
+      const safeRead = () => { try { const data = JSON.parse(localStorage.getItem(storeKey) || "{}"); return data && typeof data === "object" ? data : {}; } catch (_) { return {}; } };
       const saved = safeRead();
       const settings = { efficiency: validNumber(saved.efficiency,40,1,200), fuelPrice: validNumber(saved.fuelPrice,10000,1,1000000) };
       let history = Array.isArray(saved.history) ? saved.history.slice(0,8) : [];
