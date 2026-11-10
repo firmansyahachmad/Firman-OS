@@ -15,7 +15,7 @@ Versi ini memulihkan simulator iPhone dari Firman iOS Web Simulator V5 yang sebe
 
 **Mode alternatif:** Jika Document Picture-in-Picture tidak tersedia atau dinonaktifkan kebijakan perusahaan, tombol akan mencoba membuka popup Chrome biasa; popup tersebut **tidak selalu di atas jendela lain**.
 
-Shortcut **Jumat Bersih** mengarah ke Google Apps Script milik pengguna dan membuka URL di tab browser asli agar login Google tidak diblokir oleh iframe. Situs lain pun dapat melarang preview iframe. Jika halaman kosong, gunakan tombol **Buka Website Asli**.
+Shortcut **Jumat Bersih** kini mencoba membuka Google Apps Script langsung di **Safari pada layar iPhone/Floating Window** (iframe). Jika Google Apps Script menolak embedding melalui X-Frame-Options/CSP atau autentikasi Google, gunakan tombol **↗ Asli** di toolbar Safari untuk membuka di tab Chrome asli. Jika kamu mengelola kode Apps Script tersebut, pengaturan HtmlOutput.setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL) dapat mengizinkan iframe, tetapi harus disertai perlindungan dari clickjacking dan tidak menjamin seluruh alur login akan berjalan di dalam frame. Situs lain pun dapat melarang preview iframe. Jika halaman kosong, gunakan tombol **Buka Website Asli**.
 
 ## Dashboard Ride Computer
 Buka **https://firmansyahachmad.github.io/Firman-OS/ride.html**
