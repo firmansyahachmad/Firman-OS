@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08101b">
+  <meta name="description" content="Firman.OS Web — dashboard perjalanan, GPS, navigasi, dan launcher Web App untuk browser desktop maupun mobile.">
+  <title>Firman.OS — Ride Command Center</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080e17;--panel:#111b28;--panel2:#162333;--border:#273648;--text:#f4f8ff;--muted:#8fa1b5;--cyan:#65e6f5;--green:#73e6a8;--amber:#ffce6a;--red:#ff8b96}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 45% at 47% -5%,#142d41 0%,transparent 70%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    button,input,a{font:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none;color:inherit}
+    button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .shell{width:min(1420px,100%);margin:0 auto;padding:26px clamp(16px,3vw,40px) 50px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid var(--border)}
+    .brand{display:flex;align-items:center;gap:13px}
+    .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#80eff7,#3aaac3);box-shadow:0 0 30px #65e6f52b;color:#08101b;font-size:27px;font-weight:900;letter-spacing:-2px}
+    .brand-name{font-size:25px;font-weight:850;letter-spacing:-1px;line-height:1}
+    .brand-sub{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:700;margin-top:6px}
+    .header-tools{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border:1px solid var(--border);border-radius:999px;background:#172230;font-size:11px;letter-spacing:.7px;font-weight:800;color:var(--muted)}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0}
+    .dot.ok{background:var(--green);box-shadow:0 0 12px #73e6a87a}
+    .dot.warn{background:var(--amber)}
+    .dot.bad{background:var(--red)}
+    .button{display:inline-flex;justify-content:center;align-items:center;gap:9px;border:1px solid var(--border);border-radius:13px;padding:12px 16px;background:#1b2939;color:var(--text);font-weight:800;font-size:12px;letter-spacing:.4px;transition:transform .15s,background .15s;text-align:center}
+    .button:hover{transform:translateY(-1px);background:#293b50}
+    .button.primary{background:var(--cyan);border-color:var(--cyan);color:#07111c}
+    .button.primary:hover{background:#a0f3fb}
+    .button.stop{background:#6c2737;border-color:#b24d62;color:#fff}
+    .button.stop:hover{background:#8d3447}
+    .button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .intro{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:30px 0 24px;flex-wrap:wrap}
+    .eyebrow{font-size:11px;font-weight:900;letter-spacing:2.4px;color:var(--cyan);text-transform:uppercase}
+    h1{font-size:clamp(29px,3.7vw,44px);letter-spacing:-1.8px;margin:6px 0 3px;line-height:1.15}
+    .muted{color:var(--muted)}
+    .intro p{margin:6px 0 0;font-size:13px}
+    .datetime{font-size:12px;color:var(--muted);font-weight:600}
+    main{display:grid;grid-template-columns:minmax(275px,1.1fr) minmax(245px,.92fr) minmax(295px,1.05fr);gap:16px;align-items:stretch}
+    .card{border:1px solid var(--border);border-radius:22px;background:linear-gradient(155deg,#142131 0%,#0f1825 100%);box-shadow:0 10px 30px #00000015;padding:23px;min-width:0}
+    .card-title{font-size:11px;letter-spacing:1.6px;font-weight:900;color:var(--muted);text-transform:uppercase}
+    .speed-card{display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:440px}
+    .speed-card .card-title{align-self:flex-start}
+    .speed-gauge{position:relative;display:grid;place-items:center;width:min(100%,300px);aspect-ratio:1;--progress:0%;background:conic-gradient(from 215deg,var(--cyan) 0 var(--progress),#263548 var(--progress) 290deg,transparent 290deg 360deg);border-radius:50%;margin:8px auto}
+    .speed-gauge:before{content:"";position:absolute;inset:17px;border-radius:50%;background:var(--panel);box-shadow:inset 0 0 35px #070d16}
+    .speed-inner{position:relative;text-align:center}
+    .speed-inner .label{font-size:11px;letter-spacing:2px;font-weight:800;color:var(--muted)}
+    .speed-number{font-size:clamp(62px,7vw,94px);font-weight:900;letter-spacing:-6px;line-height:1.13;font-variant-numeric:tabular-nums}
+    .speed-unit{color:var(--cyan);font-weight:900;font-size:13px;letter-spacing:2px}
+    .speed-limits{width:100%;display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:700}
+    .speed-footer{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--border);margin-top:12px}
+    .speed-footer strong{font-size:14px}
+    .data-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .metric{display:flex;flex-direction:column;justify-content:space-between;min-height:136px}
+    .metric-label{color:var(--muted);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    .metric-value{font-size:clamp(23px,2.5vw,34px);line-height:1.1;font-weight:900;letter-spacing:-1px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+    .metric-unit{font-size:12px;font-weight:800;color:var(--muted);margin-left:5px}
+    .value-cyan{color:var(--cyan)}.value-green{color:var(--green)}.value-amber{color:var(--amber)}
+    .side{display:flex;flex-direction:column;gap:16px}
+    .side .card{padding:22px}
+    .nav-card h2,.link-card h2,.bottom-card h2{font-size:20px;letter-spacing:-.4px;margin:11px 0 5px}
+    .nav-card p,.link-card p{color:var(--muted);font-size:12px;margin:0 0 17px}
+    label{display:block;color:var(--muted);font-size:11px;letter-spacing:.5px;font-weight:800;margin-bottom:8px}
+    input{display:block;width:100%;background:#0b1420;border:1px solid #304256;border-radius:11px;color:#fff;padding:13px 14px;outline:none}
+    input:focus{border-color:var(--cyan)}
+    .stack{display:grid;gap:10px}
+    .stack .button{width:100%}
+    .link-card{background:linear-gradient(135deg,#162b38,#112032 75%);border-color:#305164}
+    .link-icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:#64e5f51d;color:var(--cyan);font-size:20px}
+    .link-card .button{width:100%}
+    .bottom{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-top:16px}
+    .bottom-card{padding:22px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    .field-grid input{max-width:100%}
+    .notice{border:1px solid #43536b;border-radius:12px;background:#1a2838;padding:12px 14px;margin-top:16px;color:#bdcddd;font-size:12px}
+    .notice strong{color:#fff}
+    #history{padding:0;margin:13px 0 0;list-style:none}
+    .history-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);padding:10px 0;font-size:12px}
+    .history-row:last-child{border-bottom:0}
+    .history-row strong{font-size:14px}
+    .history-row small{display:block;color:var(--muted)}
+    footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:22px}
+    footer a{text-decoration:underline;text-underline-offset:3px}
+    .toast{position:fixed;right:20px;bottom:20px;background:#24354a;border:1px solid #456075;border-radius:12px;padding:13px 16px;box-shadow:0 10px 40px #0008;font-size:13px;max-width:320px;z-index:10}
+    [hidden]{display:none!important}
+    @media(max-width:1100px){main{grid-template-columns:minmax(260px,1fr) minmax(250px,1fr)}.side{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr}.speed-card{min-height:390px}.speed-gauge{width:min(100%,260px)}}
+    @media(max-width:680px){.shell{padding:18px 13px 35px}.brand-name{font-size:22px}header{gap:15px}.header-tools{width:100%;justify-content:space-between;gap:8px}.header-tools .button{flex:1}.intro{margin:24px 0 18px}main,.bottom,.side{display:grid;grid-template-columns:1fr}.side{grid-column:auto}.speed-card{min-height:340px}.speed-gauge{width:min(78%,260px)}.data-grid{gap:10px}.metric{min-height:120px;padding:16px}.card{padding:19px}.field-grid{grid-template-columns:1fr}.datetime{margin-top:2px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="shell" id="top">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">F</div>
+        <div>
+          <div class="brand-name">FIRMAN.OS</div>
+          <div class="brand-sub">RIDE COMMAND CENTER · WEB V1.0</div>
+        </div>
+      </div>
+      <div class="header-tools">
+        <span class="chip" aria-live="polite"><span id="gpsDot" class="dot"></span><span id="gpsStatus">GPS READY</span></span>
+        <span class="chip"><span id="rideDot" class="dot"></span><span id="rideStatus">STANDBY</span></span>
+        <a class="button primary" id="headerWebApp" href="https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec" target="_blank" rel="noopener noreferrer">↗ BUKA WEB APP</a>
+      </div>
+    </header>
+
+    <section class="intro">
+      <div>
+        <div class="eyebrow">Live dashboard · browser edition</div>
+        <h1>Welcome to your cockpit.</h1>
+        <p class="muted">Pantau perjalanan, rencanakan rute, dan akses aplikasi kerja dari satu dashboard.</p>
+      </div>
+      <time class="datetime" id="clock" aria-label="Waktu saat ini"></time>
+    </section>
+
+    <main>
+      <section class="card speed-card" aria-labelledby="speedTitle">
+        <div class="card-title" id="speedTitle">LIVE SPEED</div>
+        <div class="speed-gauge" id="gauge" role="img" aria-label="Kecepatan 0 kilometer per jam">
+          <div class="speed-inner">
+            <div class="label">CURRENT SPEED</div>
+            <div id="speedValue" class="speed-number">0</div>
+            <div class="speed-unit">KM / H</div>
+          </div>
+        </div>
+        <div class="speed-limits"><span>0 KM/H</span><span>MAX DISPLAY 160</span></div>
+        <div class="speed-footer">
+          <div><div class="card-title">MODE</div><strong id="modeLabel">READY</strong></div>
+          <div style="text-align:right"><div class="card-title">ACCURACY</div><strong id="accuracy">—</strong></div>
+        </div>
+      </section>
+
+      <section class="data-grid" aria-label="Metrik perjalanan">
+        <div class="card metric"><span class="metric-label">Trip Time</span><div><span class="metric-value value-cyan" id="duration">00:00:00</span></div></div>
+        <div class="card metric"><span class="metric-label">Distance</span><div><span class="metric-value" id="distance">0.00</span><span class="metric-unit">KM</span></div></div>
+        <div class="card metric"><span class="metric-label">Average Speed</span><div><span class="metric-value" id="average">0</span><span class="metric-unit">KM/H</span></div></div>
+        <div class="card metric"><span class="metric-label">Fuel Used (Est.)</span><div><span class="metric-value value-amber" id="fuel">0.00</span><span class="metric-unit">L</span></div></div>
+        <div class="card metric" style="grid-column:1 / -1;min-height:120px"><span class="metric-label">Estimated Fuel Cost</span><div><span class="metric-value value-green" id="cost">Rp0</span></div></div>
+      </section>
+
+      <aside class="side">
+        <section class="card nav-card">
+          <div class="card-title">NAVIGATION</div>
+          <h2>Where to next?</h2>
+          <p>Masukkan tujuan, lalu buka petunjuk arah melalui Google Maps.</p>
+          <form id="navigationForm" class="stack">
+            <div><label for="destination">DESTINASI</label><input id="destination" type="text" autocomplete="off" placeholder="Contoh: Kantor, Monas, Makassar" maxlength="250" required></div>
+            <button class="button" type="submit">↗ NAVIGATE WITH GOOGLE MAPS</button>
+          </form>
+        </section>
+        <section class="card link-card">
+          <span class="link-icon" aria-hidden="true">↗</span>
+          <h2>Your Web App, one click away.</h2>
+          <p>Buka Google Apps Script yang sudah dihubungkan ke Firman.OS. Login dan akses mengikuti pengaturan aplikasi tersebut.</p>
+          <a class="button primary" href="https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec" target="_blank" rel="noopener noreferrer">↗ OPEN GOOGLE APPS SCRIPT</a>
+        </section>
+        <section class="card">
+          <div class="card-title" style="margin-bottom:14px">RIDE CONTROL</div>
+          <div class="stack">
+            <button id="startBtn" class="button primary" type="button">▶ START GPS RIDE</button>
+            <button id="demoBtn" class="button" type="button">◉ TRY DEMO MODE</button>
+            <button id="stopBtn" class="button stop" type="button" disabled>■ END RIDE</button>
+          </div>
+          <p class="muted" id="rideHint" style="font-size:12px;margin:13px 0 0" aria-live="polite">GPS memerlukan izin lokasi dan perangkat yang mendukung. Mode demo adalah simulasi, bukan data GPS nyata.</p>
+        </section>
+      </aside>
+    </main>
+
+    <div class="bottom">
+      <section class="card bottom-card">
+        <div class="section-head"><div><div class="card-title">PREFERENCES</div><h2>Fuel estimation</h2></div><span class="chip">SAVED ON THIS DEVICE</span></div>
+        <div class="field-grid">
+          <div><label for="efficiency">EFISIENSI BBM (KM/L)</label><input id="efficiency" type="number" min="1" max="200" step="0.1" inputmode="decimal" value="40"></div>
+          <div><label for="fuelPrice">HARGA BBM (RP/L)</label><input id="fuelPrice" type="number" min="1" max="1000000" step="100" inputmode="numeric" value="10000"></div>
+        </div>
+        <div class="notice"><strong>Informasi:</strong> Perhitungan konsumsi dan biaya BBM adalah estimasi berdasarkan angka di atas. Di laptop, lokasi biasanya kurang akurat dan kecepatan GPS mungkin tidak tersedia. Gunakan Chrome pada perangkat GPS untuk pelacakan nyata.</div>
+      </section>
+      <section class="card bottom-card">
+        <div class="section-head">
+          <div><div class="card-title">LOCAL TRIP LOG</div><h2>Recent rides</h2></div>
+          <button id="clearHistory" class="button" type="button" style="padding:8px 11px">CLEAR</button>
+        </div>
+        <ul id="history" aria-live="polite"><li class="muted" style="font-size:12px;padding-top:16px">Belum ada perjalanan tersimpan.</li></ul>
+      </section>
+    </div>
+
+    <footer>
+      <span>© Firman.OS · Web V1.0 · Semua data perjalanan disimpan lokal di browser ini.</span>
+      <span><a href="https://github.com/firmansyahachmad/Firman-OS" target="_blank" rel="noopener noreferrer">GitHub source</a> · <a href="#top" id="backTop">Back to top ↑</a></span>
+    </footer>
+  </div>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script>
+    "use strict";
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const storeKey = "firman-os-web-v1";
+      const idr = new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0});
+      const safeRead = () => { try { const data = JSON.parse(localStorage.getItem(storeKey) || "{}"); return data && typeof data === "object" ? data : {}; } catch (_) { return {}; } };
+      const saved = safeRead();
+      const settings = { efficiency: validNumber(saved.efficiency,40,1,200), fuelPrice: validNumber(saved.fuelPrice,10000,1,1000000) };
+      let history = Array.isArray(saved.history) ? saved.history.slice(0,8) : [];
+      let ride = null, watchId = null, tickId = null, lastFix = null, toastTimeout = null;
+
+      function validNumber(v, defaultValue, min, max) {
+        const n = Number(v);
+        return Number.isFinite(n) && n >= min && n <= max ? n : defaultValue;
+      }
+      function persist() {
+        try {localStorage.setItem(storeKey, JSON.stringify({efficiency:settings.efficiency,fuelPrice:settings.fuelPrice,history:history}));}
+        catch (_) {showToast("Penyimpanan lokal browser tidak tersedia.");}
+      }
+      function showToast(message) {
+        $("toast").textContent = message;
+        $("toast").hidden = false;
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => { $("toast").hidden = true; }, 4600);
+      }
+      function setGps(status, kind) {
+        $("gpsStatus").textContent = status;
+        $("gpsDot").className = "dot" + (kind ? " " + kind : "");
+      }
+      function setRideStatus(status, kind) {
+        $("rideStatus").textContent = status;
+        $("rideDot").className = "dot" + (kind ? " " + kind : "");
+      }
+      function durationText(seconds) {
+        const s = Math.max(0,Math.floor(seconds));
+        return [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map((x)=>String(x).padStart(2,"0")).join(":");
+      }
+      function elapsed() { return ride ? (Date.now() - ride.startedAt) / 1000 : 0; }
+      function render() {
+        const km = ride ? ride.distanceKm : 0;
+        const sec = elapsed();
+        const kmh = ride ? ride.speed : 0;
+        const fuel = km / settings.efficiency;
+        $("speedValue").textContent = String(Math.round(kmh));
+        $("gauge").style.setProperty("--progress", (Math.min(160,Math.max(0,kmh)) / 160 * 290) + "deg");
+        $("gauge").setAttribute("aria-label","Kecepatan " + Math.round(kmh) + " kilometer per jam");
+        $("duration").textContent = durationText(sec);
+        $("distance").textContent = km.toFixed(2);
+        $("average").textContent = sec > 0 ? String(Math.round(km / (sec / 3600))) : "0";
+        $("fuel").textContent = fuel.toFixed(2);
+        $("cost").textContent = idr.format(fuel * settings.fuelPrice);
+        $("startBtn").disabled = Boolean(ride);
+        $("demoBtn").disabled = Boolean(ride);
+        $("stopBtn").disabled = !ride;
+        $("modeLabel").textContent = ride ? (ride.mode === "demo" ? "SIMULATION" : "LIVE GPS") : "READY";
+        $("modeLabel").style.color = ride && ride.mode === "demo" ? "var(--amber)" : "var(--text)";
+      }
+      function resetTimer() {
+        if (tickId !== null) clearInterval(tickId);
+        tickId = setInterval(() => {
+          if (!ride) return;
+          if (ride.mode === "demo") {
+            const now = Date.now();
+            const dt = Math.max(0,Math.min(2,(now - ride.lastDemoAt)/1000));
+            ride.lastDemoAt = now;
+            ride.speed = 42 + Math.sin((now - ride.startedAt)/4200) * 12;
+            ride.distanceKm += ride.speed * dt / 3600;
+          }
+          render();
+        },1000);
+      }
+      function startRide(mode) {
+        if (ride) return;
+        ride = { mode:mode, startedAt:Date.now(), distanceKm:0, speed:0, lastDemoAt:Date.now() };
+        lastFix = null;
+        $("accuracy").textContent = "—";
+        if (mode === "demo") {
+          setGps("DEMO DATA","warn");
+          setRideStatus("SIMULATING","warn");
+          $("rideHint").textContent = "MODE DEMO AKTIF — kecepatan dan jarak adalah simulasi, bukan posisi GPS nyata.";
+        } else {
+          setGps("ACQUIRING GPS","warn");
+          setRideStatus("RIDE ACTIVE","ok");
+          $("rideHint").textContent = "Sedang membaca lokasi. Izinkan akses lokasi bila diminta Chrome.";
+          if (!("geolocation" in navigator)) {
+            setGps("NO GPS SUPPORT","bad");
+            $("rideHint").textContent = "Browser/perangkat ini tidak mendukung geolokasi. Coba mode demo.";
+          } else {
+            watchId = navigator.geolocation.watchPosition(onLocation, onLocationError, {
+              enableHighAccuracy:true, maximumAge:1000, timeout:15000
+            });
+          }
+        }
+        resetTimer();
+        render();
+      }
+      function radians(n) {return n * Math.PI / 180;}
+      function metersBetween(a,b) {
+        const R = 6371000;
+        const dLat = radians(b.latitude-a.latitude);
+        const dLon = radians(b.longitude-a.longitude);
+        const q = Math.sin(dLat/2)**2 + Math.cos(radians(a.latitude))*Math.cos(radians(b.latitude))*Math.sin(dLon/2)**2;
+        return 2 * R * Math.atan2(Math.sqrt(q),Math.sqrt(1-q));
+      }
+      function onLocation(position) {
+        if (!ride || ride.mode !== "live") return;
+        const coords = position.coords;
+        const fix = {latitude:coords.latitude,longitude:coords.longitude,accuracy:coords.accuracy,time:position.timestamp};
+        const accuracy = Number(coords.accuracy);
+        $("accuracy").textContent = Number.isFinite(accuracy) ? "±" + Math.round(accuracy) + " M" : "—";
+        if (!Number.isFinite(accuracy) || accuracy > 100) {
+          setGps("LOW ACCURACY","warn");
+          $("rideHint").textContent = "Akurasi lokasi rendah. Jarak tidak ditambahkan sampai GPS membaik.";
+          lastFix = null;
+          ride.speed = 0;
+          render();
+          return;
+        }
+        setGps("GPS CONNECTED","ok");
+        $("rideHint").textContent = "GPS aktif. Jarak dihitung dari perpindahan lokasi yang valid.";
+        if (lastFix && fix.time > lastFix.time) {
+          const distM = metersBetween(lastFix,fix);
+          const dt = (fix.time-lastFix.time)/1000;
+          const sampleSpeed = distM/dt*3.6;
+          if (distM >= Math.max(5, (accuracy + lastFix.accuracy)*0.15) && sampleSpeed <= 180) {
+            ride.distanceKm += distM/1000;
+          }
+          if (sampleSpeed > 180) {lastFix = fix; return;}
+          if (Number.isFinite(coords.speed) && coords.speed >= 0) ride.speed = Math.min(coords.speed*3.6,180);
+          else ride.speed = sampleSpeed < 2.5 ? 0 : sampleSpeed;
+        } else if (Number.isFinite(coords.speed) && coords.speed >= 0) {
+          ride.speed = Math.min(coords.speed*3.6,180);
+        }
+        lastFix = fix;
+        render();
+      }
+      function onLocationError(error) {
+        if (!ride || ride.mode !== "live") return;
+        setGps(error.code === 1 ? "GPS DENIED" : "GPS UNAVAILABLE","bad");
+        $("rideHint").textContent = error.code === 1 ? "Izin lokasi ditolak. Buka pengaturan lokasi Chrome, atau pilih mode demo." : "Posisi GPS belum tersedia. Periksa lokasi Windows atau gunakan mode demo.";
+        ride.speed = 0;
+        render();
+      }
+      function stopRide() {
+        if (!ride) return;
+        const summary = {date:new Date().toISOString(),sec:Math.floor(elapsed()),km:ride.distanceKm,mode:ride.mode};
+        if (watchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        if (tickId !== null) clearInterval(tickId);
+        tickId = null;
+        ride = null;
+        lastFix = null;
+        setRideStatus("STANDBY","");
+        setGps("GPS READY","");
+        $("rideHint").textContent = "Perjalanan berakhir. Mulai GPS Ride atau pilih mode demo untuk sesi baru.";
+        $("accuracy").textContent = "—";
+        if (summary.sec > 0) {
+          history.unshift(summary);
+          history = history.slice(0,8);
+          persist();
+          renderHistory();
+          showToast("Perjalanan tersimpan di browser ini.");
+        }
+        render();
+      }
+      function renderHistory() {
+        const list = $("history");
+        list.replaceChildren();
+        if (!history.length) {
+          const empty = document.createElement("li");
+          empty.className = "muted";
+          empty.style.cssText = "font-size:12px;padding-top:16px";
+          empty.textContent = "Belum ada perjalanan tersimpan.";
+          list.appendChild(empty);
+          return;
+        }
+        history.slice(0,3).forEach((item) => {
+          const li = document.createElement("li");
+          li.className = "history-row";
+          const left = document.createElement("div"), right = document.createElement("div");
+          const label = document.createElement("strong");
+          const small = document.createElement("small");
+          const date = new Date(item.date);
+          label.textContent = item.mode === "demo" ? "DEMO RIDE" : "GPS RIDE";
+          small.textContent = (Number.isNaN(date.getTime()) ? "Tanggal tidak diketahui" : date.toLocaleString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})) + " · " + durationText(item.sec);
+          right.textContent = validNumber(item.km,0,0,100000).toFixed(2) + " km";
+          left.append(label,small);
+          li.append(left,right);
+          list.appendChild(li);
+        });
+      }
+      function applySetting(id,key,min,max) {
+        const input = $(id);
+        const n = Number(input.value);
+        if (!Number.isFinite(n) || n < min || n > max) {
+          input.value = String(settings[key]);
+          showToast("Nilai " + (key === "efficiency" ? "efisiensi" : "harga BBM") + " tidak valid.");
+          return;
+        }
+        settings[key] = n;
+        persist();
+        render();
+      }
+      $("efficiency").value = String(settings.efficiency);
+      $("fuelPrice").value = String(settings.fuelPrice);
+      $("efficiency").addEventListener("change",()=>applySetting("efficiency","efficiency",1,200));
+      $("fuelPrice").addEventListener("change",()=>applySetting("fuelPrice","fuelPrice",1,1000000));
+      $("startBtn").addEventListener("click",()=>startRide("live"));
+      $("demoBtn").addEventListener("click",()=>startRide("demo"));
+      $("stopBtn").addEventListener("click",stopRide);
+      $("clearHistory").addEventListener("click",()=> {
+        if (!history.length) return;
+        if (!confirm("Hapus seluruh riwayat perjalanan yang disimpan di browser ini?")) return;
+        history = []; persist(); renderHistory(); showToast("Riwayat perjalanan dihapus.");
+      });
+      $("navigationForm").addEventListener("submit",(event)=>{
+        event.preventDefault();
+        const dest = $("destination").value.trim();
+        if (!dest) {showToast("Masukkan tujuan terlebih dahulu.");return;}
+        const url = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(dest) + "&travelmode=driving";
+        window.open(url,"_blank","noopener,noreferrer");
+      });
+      function updateClock() {
+        $("clock").textContent = new Intl.DateTimeFormat("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date());
+      }
+      updateClock();
+      setInterval(updateClock,30000);
+      renderHistory();
+      render();
+    }());
+  </script>
+</body>
+</html>

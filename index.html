@@ -1,433 +1,150 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08101b">
-  <meta name="description" content="Firman.OS Web — dashboard perjalanan, GPS, navigasi, dan launcher Web App untuk browser desktop maupun mobile.">
-  <title>Firman.OS — Ride Command Center</title>
-  <style>
-    :root{color-scheme:dark;--bg:#080e17;--panel:#111b28;--panel2:#162333;--border:#273648;--text:#f4f8ff;--muted:#8fa1b5;--cyan:#65e6f5;--green:#73e6a8;--amber:#ffce6a;--red:#ff8b96}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 45% at 47% -5%,#142d41 0%,transparent 70%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-    button,input,a{font:inherit}
-    button{cursor:pointer}
-    a{text-decoration:none;color:inherit}
-    button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
-    .shell{width:min(1420px,100%);margin:0 auto;padding:26px clamp(16px,3vw,40px) 50px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid var(--border)}
-    .brand{display:flex;align-items:center;gap:13px}
-    .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#80eff7,#3aaac3);box-shadow:0 0 30px #65e6f52b;color:#08101b;font-size:27px;font-weight:900;letter-spacing:-2px}
-    .brand-name{font-size:25px;font-weight:850;letter-spacing:-1px;line-height:1}
-    .brand-sub{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:700;margin-top:6px}
-    .header-tools{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
-    .chip{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border:1px solid var(--border);border-radius:999px;background:#172230;font-size:11px;letter-spacing:.7px;font-weight:800;color:var(--muted)}
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0}
-    .dot.ok{background:var(--green);box-shadow:0 0 12px #73e6a87a}
-    .dot.warn{background:var(--amber)}
-    .dot.bad{background:var(--red)}
-    .button{display:inline-flex;justify-content:center;align-items:center;gap:9px;border:1px solid var(--border);border-radius:13px;padding:12px 16px;background:#1b2939;color:var(--text);font-weight:800;font-size:12px;letter-spacing:.4px;transition:transform .15s,background .15s;text-align:center}
-    .button:hover{transform:translateY(-1px);background:#293b50}
-    .button.primary{background:var(--cyan);border-color:var(--cyan);color:#07111c}
-    .button.primary:hover{background:#a0f3fb}
-    .button.stop{background:#6c2737;border-color:#b24d62;color:#fff}
-    .button.stop:hover{background:#8d3447}
-    .button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-    .intro{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:30px 0 24px;flex-wrap:wrap}
-    .eyebrow{font-size:11px;font-weight:900;letter-spacing:2.4px;color:var(--cyan);text-transform:uppercase}
-    h1{font-size:clamp(29px,3.7vw,44px);letter-spacing:-1.8px;margin:6px 0 3px;line-height:1.15}
-    .muted{color:var(--muted)}
-    .intro p{margin:6px 0 0;font-size:13px}
-    .datetime{font-size:12px;color:var(--muted);font-weight:600}
-    main{display:grid;grid-template-columns:minmax(275px,1.1fr) minmax(245px,.92fr) minmax(295px,1.05fr);gap:16px;align-items:stretch}
-    .card{border:1px solid var(--border);border-radius:22px;background:linear-gradient(155deg,#142131 0%,#0f1825 100%);box-shadow:0 10px 30px #00000015;padding:23px;min-width:0}
-    .card-title{font-size:11px;letter-spacing:1.6px;font-weight:900;color:var(--muted);text-transform:uppercase}
-    .speed-card{display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:440px}
-    .speed-card .card-title{align-self:flex-start}
-    .speed-gauge{position:relative;display:grid;place-items:center;width:min(100%,300px);aspect-ratio:1;--progress:0%;background:conic-gradient(from 215deg,var(--cyan) 0 var(--progress),#263548 var(--progress) 290deg,transparent 290deg 360deg);border-radius:50%;margin:8px auto}
-    .speed-gauge:before{content:"";position:absolute;inset:17px;border-radius:50%;background:var(--panel);box-shadow:inset 0 0 35px #070d16}
-    .speed-inner{position:relative;text-align:center}
-    .speed-inner .label{font-size:11px;letter-spacing:2px;font-weight:800;color:var(--muted)}
-    .speed-number{font-size:clamp(62px,7vw,94px);font-weight:900;letter-spacing:-6px;line-height:1.13;font-variant-numeric:tabular-nums}
-    .speed-unit{color:var(--cyan);font-weight:900;font-size:13px;letter-spacing:2px}
-    .speed-limits{width:100%;display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:700}
-    .speed-footer{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--border);margin-top:12px}
-    .speed-footer strong{font-size:14px}
-    .data-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .metric{display:flex;flex-direction:column;justify-content:space-between;min-height:136px}
-    .metric-label{color:var(--muted);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
-    .metric-value{font-size:clamp(23px,2.5vw,34px);line-height:1.1;font-weight:900;letter-spacing:-1px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-    .metric-unit{font-size:12px;font-weight:800;color:var(--muted);margin-left:5px}
-    .value-cyan{color:var(--cyan)}.value-green{color:var(--green)}.value-amber{color:var(--amber)}
-    .side{display:flex;flex-direction:column;gap:16px}
-    .side .card{padding:22px}
-    .nav-card h2,.link-card h2,.bottom-card h2{font-size:20px;letter-spacing:-.4px;margin:11px 0 5px}
-    .nav-card p,.link-card p{color:var(--muted);font-size:12px;margin:0 0 17px}
-    label{display:block;color:var(--muted);font-size:11px;letter-spacing:.5px;font-weight:800;margin-bottom:8px}
-    input{display:block;width:100%;background:#0b1420;border:1px solid #304256;border-radius:11px;color:#fff;padding:13px 14px;outline:none}
-    input:focus{border-color:var(--cyan)}
-    .stack{display:grid;gap:10px}
-    .stack .button{width:100%}
-    .link-card{background:linear-gradient(135deg,#162b38,#112032 75%);border-color:#305164}
-    .link-icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:#64e5f51d;color:var(--cyan);font-size:20px}
-    .link-card .button{width:100%}
-    .bottom{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-top:16px}
-    .bottom-card{padding:22px}
-    .section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
-    .field-grid input{max-width:100%}
-    .notice{border:1px solid #43536b;border-radius:12px;background:#1a2838;padding:12px 14px;margin-top:16px;color:#bdcddd;font-size:12px}
-    .notice strong{color:#fff}
-    #history{padding:0;margin:13px 0 0;list-style:none}
-    .history-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);padding:10px 0;font-size:12px}
-    .history-row:last-child{border-bottom:0}
-    .history-row strong{font-size:14px}
-    .history-row small{display:block;color:var(--muted)}
-    footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:22px}
-    footer a{text-decoration:underline;text-underline-offset:3px}
-    .toast{position:fixed;right:20px;bottom:20px;background:#24354a;border:1px solid #456075;border-radius:12px;padding:13px 16px;box-shadow:0 10px 40px #0008;font-size:13px;max-width:320px;z-index:10}
-    [hidden]{display:none!important}
-    @media(max-width:1100px){main{grid-template-columns:minmax(260px,1fr) minmax(250px,1fr)}.side{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr}.speed-card{min-height:390px}.speed-gauge{width:min(100%,260px)}}
-    @media(max-width:680px){.shell{padding:18px 13px 35px}.brand-name{font-size:22px}header{gap:15px}.header-tools{width:100%;justify-content:space-between;gap:8px}.header-tools .button{flex:1}.intro{margin:24px 0 18px}main,.bottom,.side{display:grid;grid-template-columns:1fr}.side{grid-column:auto}.speed-card{min-height:340px}.speed-gauge{width:min(78%,260px)}.data-grid{gap:10px}.metric{min-height:120px;padding:16px}.card{padding:19px}.field-grid{grid-template-columns:1fr}.datetime{margin-top:2px}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#080d18">
+<meta name="description" content="Firman.OS Floating — simulator iPhone yang melayang di atas aplikasi Windows lewat Chrome Picture-in-Picture.">
+<title>Firman.OS Floating — iOS Simulator V6</title>
+<style>
+:root{--bg:#080d18;--panel:#111b2c;--panel2:#152136;--line:#2a3a53;--muted:#93a4be;--text:#f6f8ff;--blue:#78afff;--accent:#a0b9ff;--phoneW:393px;--phoneH:852px;--scale:.73;--glass:rgba(12,19,35,.71);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% -20%,#253a65 0,transparent 48%),#080d18;color:var(--text);min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.42}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.sprite{display:none}.icon{width:19px;height:19px;vertical-align:middle;display:inline-block;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.icon.sm{width:16px;height:16px}.icon.lg{width:24px;height:24px}
+.shell{min-height:100vh;display:grid;grid-template-columns:295px minmax(420px,1fr) 305px;gap:16px;padding:20px;max-width:1660px;margin:auto}.panel{background:rgba(16,25,43,.9);border:1px solid #263954;border-radius:20px;overflow:hidden;align-self:start;box-shadow:0 14px 48px #0003}.left-panel,.right-panel{padding:22px}.brand{display:flex;gap:12px;align-items:center;margin-bottom:25px}.brand-symbol{width:46px;height:46px;background:linear-gradient(130deg,#71bfff,#9878ff 58%,#f077c2);border-radius:16px;display:grid;place-items:center;font-size:26px;box-shadow:0 8px 26px #688aff55}.brand h1{font-size:16px;letter-spacing:.2px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:11px}.smalltitle{font-size:10px;color:#a6b9d4;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;margin:24px 0 11px}.field-label{font-size:12px;color:#bec9da;display:block;margin-bottom:7px}.textinput,.select{width:100%;height:43px;border:1px solid #34465f;background:#0b1526;color:#fff;border-radius:11px;padding:0 12px;outline:none}.textinput::placeholder{color:#7688a3}.textinput:focus,.select:focus{border-color:#82adff}.row{display:flex;gap:8px;align-items:center}.btn{padding:11px 13px;border:1px solid #344761;background:#1b2b43;color:#eef5ff;border-radius:11px;font-weight:700;font-size:12px;display:inline-flex;gap:7px;align-items:center;justify-content:center;white-space:nowrap;transition:background .15s,transform .15s}.btn:hover{background:#294063}.btn:active{transform:scale(.97)}.btn.primary{border-color:transparent;background:linear-gradient(125deg,#398bfb,#777df5);box-shadow:0 8px 20px #3466ef33}.btn.primary:hover{background:linear-gradient(125deg,#5ca6ff,#958ffa)}.btn.block{width:100%}.btn.ghost{background:#121d2f}.btn.small{padding:8px 10px}.split{display:grid;grid-template-columns:1fr 1fr;gap:9px}.device-row{display:flex;gap:7px;flex-wrap:wrap}.chip{padding:8px 10px;background:#15243a;border:1px solid #34465d;color:#b5c7df;border-radius:9px;font-size:11px;cursor:pointer}.chip.active{background:#2b4677;border-color:#83a6ff;color:white}.hint{font-size:11px;line-height:1.55;color:var(--muted)}.note{padding:12px;background:#101d30;border:1px solid #2e425d;border-radius:12px;font-size:11px;color:#b3c4dd;line-height:1.55}.note strong{color:#e5edfa}.quicklist{display:flex;flex-direction:column;gap:8px}.quickitem{border:1px solid #2b3d56;border-radius:12px;background:#142136;padding:10px 11px;display:flex;gap:10px;align-items:center}.quickitem-icon{height:34px;width:34px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(140deg,#2c4a83,#4756ac);font-size:18px}.quickitem-text{flex:1;min-width:0}.quickitem-text strong{display:block;font-size:11px}.quickitem-text span{display:block;font-size:10px;color:#93a5c0;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.iconbtn{display:grid;place-items:center;border:0;border-radius:9px;background:#23344c;color:#c8d9f1;width:28px;height:28px}.iconbtn:hover{background:#344a6e}.center{min-width:0;background:radial-gradient(ellipse at center,#253455 0,transparent 65%);border:1px solid #233450;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative;overflow:visible}.topline{width:100%;display:flex;align-items:center;justify-content:space-between;padding:17px 20px;color:#a0b6d3;font-size:11px}.online{display:flex;gap:7px;align-items:center}.dot{height:7px;width:7px;background:#61e5a8;border-radius:50%;box-shadow:0 0 12px #57daaa}.workspace{width:100%;flex:1;display:flex;align-items:center;justify-content:center;min-height:735px;padding:14px 0 25px;overflow:hidden}.phone-holder{width:calc(var(--phoneW) * var(--scale) + 28px);height:calc(var(--phoneH) * var(--scale) + 28px);position:relative;flex-shrink:0;transition:width .2s,height .2s}.phone{width:calc(var(--phoneW) + 18px);height:calc(var(--phoneH) + 18px);position:absolute;top:0;left:0;transform:scale(var(--scale));transform-origin:top left;background:#090a0f;padding:9px;border:2px solid #5e626e;border-radius:56px;box-shadow:0 0 0 3px #15171d,0 0 0 5px #363b47,0 31px 68px #000a,0 0 70px #304b8455}.phone:before,.phone:after{content:"";position:absolute;background:#6c717e;border-radius:4px;width:4px}.phone:before{height:72px;left:-7px;top:155px}.phone:after{height:54px;right:-7px;top:215px}.screen{width:100%;height:100%;border-radius:46px;overflow:hidden;position:relative;background:#232b4a;color:white;isolation:isolate}.wallpaper{position:absolute;inset:0;background:radial-gradient(ellipse 110% 45% at 100% 90%,#e2a0cf 0%,transparent 58%),radial-gradient(ellipse 80% 51% at 22% 78%,#5447e3,transparent 75%),radial-gradient(ellipse 90% 57% at 65% 18%,#193cb5,transparent 66%),linear-gradient(145deg,#081034 5%,#241e61 65%,#6f4ba5 100%);z-index:-1}.wallpaper.sunset{background:radial-gradient(ellipse at 40% 60%,#ffb575,transparent 55%),radial-gradient(ellipse at 90% 95%,#bb2773,transparent 64%),linear-gradient(160deg,#141d4c,#62216a,#ed7569)}.wallpaper.ocean{background:radial-gradient(ellipse at 70% 77%,#5ffff1,transparent 60%),radial-gradient(ellipse at 15% 42%,#2164cd,transparent 58%),linear-gradient(150deg,#061a38,#114878,#15a2a4)}.wallpaper.black{background:radial-gradient(ellipse at 52% 64%,#343645,transparent 58%),linear-gradient(155deg,#050609,#151924,#040508)}.statusbar{position:absolute;z-index:30;top:0;left:0;right:0;height:56px;display:flex;justify-content:space-between;align-items:flex-start;padding:15px 27px 0;font-size:15px;font-weight:700;pointer-events:none}.statusbar.darkstatus{color:#20232d}.status-right{display:flex;gap:7px;align-items:center}.status-right svg{height:13px;width:18px}.island{position:absolute;left:50%;top:10px;transform:translateX(-50%);height:34px;width:123px;background:#040408;border-radius:25px;z-index:35;display:flex;align-items:center;justify-content:flex-end;padding-right:13px;box-shadow:inset 0 0 1px #54545a;cursor:pointer}.camera-dot{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 55% 48%,#172957 12%,#090915 41%,#060608 62%);box-shadow:0 0 1px #61749a}.home-area{position:absolute;inset:0;padding:79px 22px 0;display:flex;flex-direction:column}.home-date{font-size:14px;letter-spacing:.15px;text-shadow:0 2px 7px #0a0c3550}.home-clock{font-size:58px;font-weight:230;letter-spacing:-3px;margin-top:0;text-shadow:0 2px 8px #07081d33}.widgetcard{margin-top:14px;height:124px;border-radius:24px;background:linear-gradient(145deg,#ffffff35,#ffffff12);border:1px solid #ffffff40;backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:20px}.widgetcard strong{font-size:18px}.widgetcard small{display:block;font-size:12px;color:#e2ebff;margin-top:7px}.widgetcard .weather{font-size:42px}.app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));row-gap:22px;column-gap:8px;margin-top:32px}.app-icon{border:0;background:transparent;color:white;text-align:center;padding:0;min-width:0}.app-graphic{width:61px;height:61px;margin:auto auto 7px;display:grid;place-items:center;font-size:27px;border-radius:15px;box-shadow:0 5px 15px #0004;position:relative;overflow:hidden}.app-graphic svg{height:34px;width:34px}.app-graphic.safari{background:#f9fbff;color:#1789e5}.app-graphic.asta{background:linear-gradient(155deg,#ffb61f,#ef4a53)}.app-graphic.dony{background:linear-gradient(155deg,#fd5da6,#aa2686)}.app-graphic.near{background:linear-gradient(155deg,#579cfa,#2852dd)}.app-graphic.notes{background:linear-gradient(155deg,#fff,#eee5d5);color:#dabb30}.app-graphic.settings{background:linear-gradient(155deg,#e6edf5,#838b9b);color:#454b56}.app-graphic.links{background:linear-gradient(150deg,#44d3ce,#148a8e)}.app-graphic.help{background:linear-gradient(145deg,#744de2,#36348c)}.app-label{font-size:11px;text-shadow:0 1px 5px #0009;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.dots{text-align:center;font-size:17px;letter-spacing:4px;margin-top:auto;padding-bottom:19px;color:#ffffffaa}.dock{height:93px;border-radius:29px;background:#ffffff3d;backdrop-filter:blur(24px);border:1px solid #ffffff60;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:9px 5px;margin-bottom:28px}.dock .app-graphic{width:62px;height:62px;margin:0 auto}.dock .app-label{display:none}.home-indicator{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);border:0;width:133px;height:5px;border-radius:8px;background:#fff;z-index:45;cursor:pointer;box-shadow:0 0 7px #0002}.home-indicator.dark{background:#161824}.native-app{position:absolute;inset:0;z-index:18;display:none;padding-top:53px;background:#f7f7fa;color:#1c2430}.native-app.active{display:block}.native-header{height:53px;display:flex;align-items:center;gap:12px;padding:0 17px;border-bottom:1px solid #e3e7ed;background:#f7f7fa}.native-header strong{font-size:16px}.back-app{border:0;color:#1677ed;background:transparent;font-size:13px;display:flex;gap:4px;align-items:center;padding:7px 1px}.native-content{padding:22px 19px;overflow:auto;height:calc(100% - 108px);font-size:14px}.native-content h2{font-size:24px;margin:5px 0 11px}.native-content p{color:#5d697a;line-height:1.5}.native-list{display:flex;flex-direction:column;background:white;border-radius:15px;overflow:hidden;margin:15px 0;border:1px solid #e7eaf0}.native-list button{display:flex;align-items:center;gap:11px;text-align:left;border:0;border-bottom:1px solid #eef0f3;background:white;padding:15px;color:#22304b}.native-list button:last-child{border:0}.native-list button span{margin-left:auto;color:#96a4b7}.native-btn{background:#0876f9;color:white;border:0;border-radius:12px;padding:12px 16px;font-weight:700}.native-field{height:42px;border:1px solid #dbe1eb;border-radius:11px;padding:0 11px;background:white;color:#192234;width:100%;margin:8px 0 12px}.browser{position:absolute;inset:0;z-index:20;background:#fff;color:#1b273d;display:none;flex-direction:column;padding-top:56px}.browser.active{display:flex}.browser-toolbar{padding:9px 11px 10px;border-bottom:1px solid #e5eaf3;background:#f5f7fb;flex:0 0 auto}.browser-address{display:flex;gap:8px;align-items:center;background:#e7eaf0;border-radius:11px;padding:0 10px;height:39px}.browser-address input{border:0;background:transparent;color:#202b3e;font-size:13px;min-width:0;flex:1;outline:none}.browser-address button{border:0;background:transparent;color:#5d6e84;font-size:16px;padding:3px}.browser-body{flex:1;min-height:0;position:relative;background:#fff}.browser-body iframe{width:100%;height:100%;border:0;background:white}.safari-start{position:absolute;inset:0;background:#f7f7fa;padding:28px 20px;text-align:center;overflow:auto}.safari-start h2{font-size:24px;margin:0 0 8px}.safari-start p{font-size:12px;color:#788395;line-height:1.5}.safari-start-btn{border:0;background:white;width:100%;border-radius:13px;padding:15px;margin-top:13px;text-align:left;color:#2b3f5d;box-shadow:0 3px 14px #0000000c}.browser-error{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px 22px;background:#f8faff;color:#213352}.browser-error.active{display:flex}.browser-error p{font-size:12px;line-height:1.55;color:#72829b}.browser-actions{height:62px;flex:0 0 auto;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #e4e8f0;background:#f8f9fc;padding-bottom:12px}.browser-actions button{border:0;background:transparent;color:#2279e5;display:grid;place-items:center;padding:7px}.browser-actions button:disabled{color:#bac1ca}.cc-panel{display:none;position:absolute;inset:0;z-index:41;background:rgba(18,26,52,.74);backdrop-filter:blur(28px);padding:90px 24px 28px}.cc-panel.active{display:block}.cc-title{font-size:25px;font-weight:700;margin-bottom:18px}.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cc-tile{min-height:105px;border-radius:20px;background:#ffffff24;border:1px solid #ffffff23;padding:17px;display:flex;flex-direction:column;justify-content:space-between}.cc-tile b{font-size:12px}.cc-tile svg{width:27px;height:27px}.cc-close{margin-top:20px;width:100%;border:1px solid #ffffff33;color:white;background:#ffffff23;padding:12px;border-radius:13px}.screen-toast{position:absolute;z-index:55;top:67px;left:20px;right:20px;display:none;align-items:center;justify-content:center;padding:12px;border-radius:15px;text-align:center;font-size:12px;background:#202b43ed;border:1px solid #ffffff30;color:white;box-shadow:0 8px 20px #0007;line-height:1.4}.screen-toast.show{display:flex}.device-footer{text-align:center;padding:0 25px 19px;color:#8295b3;font-size:11px}.right-panel .section{border-bottom:1px solid #2b3a52;padding-bottom:18px;margin-bottom:18px}.right-panel .section:last-child{border:0;margin:0;padding:0}.log{font-family:Consolas,monospace;font-size:10px;color:#91d2b6;background:#081421;border:1px solid #29405a;border-radius:12px;padding:12px;min-height:94px;max-height:210px;overflow:auto;line-height:1.6;word-break:break-word}.log .warn{color:#fcd18a}.log .error{color:#ff9fac}.kbd{font-family:Consolas,monospace;font-size:10px;border:1px solid #425673;padding:2px 5px;border-radius:5px;color:#c2d6f1}.popup-top{display:none}.hidden{display:none!important}.app-badge{font-size:10px;padding:4px 7px;border-radius:12px;background:#244c5a;color:#9ee4d4}.mobile-note{display:none}
+@media(max-width:1210px){.shell{grid-template-columns:265px minmax(350px,1fr);padding:13px;gap:12px}.right-panel{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.right-panel .section{border:0;border-right:1px solid #2b3a52;padding:0 18px 0 0;margin:0}.right-panel .section:last-child{border:0}.workspace{min-height:690px}}
+@media(max-width:750px){.shell{display:flex;flex-direction:column;padding:8px}.center{order:1}.left-panel{order:2}.right-panel{order:3;display:block}.right-panel .section{border:0;border-bottom:1px solid #2b3a52;margin-bottom:20px;padding:0 0 17px}.workspace{min-height:660px}.mobile-note{display:block}.left-panel,.right-panel{padding:18px}.topline{padding:14px}}
+/* Popup browser mode */
+body.popup-mode{background:#0b111e;min-height:100vh;overflow:hidden}body.popup-mode .shell{display:block;padding:0;margin:0;max-width:none;min-height:100vh}body.popup-mode .left-panel,body.popup-mode .right-panel{display:none}body.popup-mode .center{background:transparent;border:0;min-height:100vh;border-radius:0}body.popup-mode .topline,body.popup-mode .device-footer{display:none}body.popup-mode .popup-top{display:flex;width:100%;height:45px;gap:8px;align-items:center;justify-content:space-between;padding:0 13px;background:#121c2d;border-bottom:1px solid #2b3850}body.popup-mode .popup-top span{font-size:12px;font-weight:800}body.popup-mode .popup-top button{padding:6px;border:0;border-radius:8px;color:#e8f2ff;background:#253650}body.popup-mode .workspace{min-height:unset;padding:10px 0;flex:1;align-items:flex-start}body.popup-mode .phone-holder{margin:auto}body.popup-mode .phone{box-shadow:0 0 0 2px #414a5c,0 14px 38px #0009}
+/* Document Picture-in-Picture window: CSS gets copied into its document */
+body.pip-body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111725;min-height:100vh;overflow:hidden}body.pip-body .phone-holder{margin:auto;--scale:.72}body.pip-body .phone{box-shadow:0 0 0 2px #414a5c,0 10px 35px #0008}body.pip-body .pip-hint{color:#8ca2c2;font-size:11px;text-align:center;padding-bottom:8px}
+@media(max-height:700px){body.popup-mode .phone-holder{--scale:.62}}@media(max-width:390px){body.popup-mode .phone-holder{--scale:.61}}
+</style>
 </head>
 <body>
-  <div class="shell" id="top">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">F</div>
-        <div>
-          <div class="brand-name">FIRMAN.OS</div>
-          <div class="brand-sub">RIDE COMMAND CENTER · WEB V1.0</div>
-        </div>
-      </div>
-      <div class="header-tools">
-        <span class="chip" aria-live="polite"><span id="gpsDot" class="dot"></span><span id="gpsStatus">GPS READY</span></span>
-        <span class="chip"><span id="rideDot" class="dot"></span><span id="rideStatus">STANDBY</span></span>
-        <a class="button primary" id="headerWebApp" href="https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec" target="_blank" rel="noopener noreferrer">↗ BUKA WEB APP</a>
-      </div>
-    </header>
-
-    <section class="intro">
-      <div>
-        <div class="eyebrow">Live dashboard · browser edition</div>
-        <h1>Welcome to your cockpit.</h1>
-        <p class="muted">Pantau perjalanan, rencanakan rute, dan akses aplikasi kerja dari satu dashboard.</p>
-      </div>
-      <time class="datetime" id="clock" aria-label="Waktu saat ini"></time>
-    </section>
-
-    <main>
-      <section class="card speed-card" aria-labelledby="speedTitle">
-        <div class="card-title" id="speedTitle">LIVE SPEED</div>
-        <div class="speed-gauge" id="gauge" role="img" aria-label="Kecepatan 0 kilometer per jam">
-          <div class="speed-inner">
-            <div class="label">CURRENT SPEED</div>
-            <div id="speedValue" class="speed-number">0</div>
-            <div class="speed-unit">KM / H</div>
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg"><symbol id="i-smartphone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol><symbol id="i-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-9 9"/><path d="M19 13v6H5V5h6"/></symbol><symbol id="i-rotate" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13-6l2 2V3m0 5h-5M20 12a8 8 0 0 1-13 6l-2-2v5m0-5h5"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2 6M20 4v7h-7"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="m10 13 4-4M8 16H6a4 4 0 0 1 0-8h4M14 8h4a4 4 0 0 1 0 8h-4"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol><symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0M9 16a5 5 0 0 1 6 0M12 20h.01"/></symbol><symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="6" width="19" height="12" rx="3"/><path d="M23 10v4"/><rect x="4" y="8" width="14" height="8" rx="1" fill="currentColor" stroke="none"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V2m-5 5 5-5 5 5"/><path d="M5 12v9h14v-9"/></symbol><symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2c-6 7-6 13 0 20m0-20c6 7 6 13 0 20"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol></svg>
+<div class="shell">
+  <aside class="panel left-panel">
+    <div class="brand"><div class="brand-symbol">◈</div><div><h1>FIRMAN.OS FLOATING</h1><p>V6 · Chrome Windows · No Installation</p></div></div>
+    <div class="note"><strong>Mode aman untuk laptop kantor.</strong> Tidak perlu instal aplikasi atau menjalankan file .bat. Cukup buka HTML ini di Chrome atau Edge, selama diizinkan kebijakan IT.</div>
+    <div class="smalltitle">Dashboard lainnya</div>
+    <a class="btn block" href="./ride.html" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none">↗ Dashboard Speedometer</a>
+    <div class="smalltitle">Buka aplikasi dari URL</div>
+    <label class="field-label" for="linkBox">Link aplikasi kamu</label>
+    <input class="textinput" id="linkBox" type="url" placeholder="https://nama-project.web.app" autocomplete="off" spellcheck="false">
+    <div class="row" style="margin-top:9px"><button class="btn primary" id="goLink" style="flex:1"><svg class="icon sm"><use href="#i-play"/></svg> Buka di iPhone</button><button class="btn" id="saveLink" title="Simpan link di daftar favorit"><svg class="icon sm"><use href="#i-bookmark"/></svg></button></div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" id="externalLink" style="flex:1"><svg class="icon sm"><use href="#i-external"/></svg> Buka asli di tab baru</button></div>
+    <div class="smalltitle">Jendela melayang — Always on Top</div>
+    <button class="btn primary block" id="openPip"><svg class="icon"><use href="#i-smartphone"/></svg> Buka FIRMAN.OS Melayang</button>
+    <p class="hint">Mencoba jendela <strong>Always on Top</strong> jika fitur Picture-in-Picture tersedia. Jika tidak, otomatis membuka popup browser biasa (tidak selalu di atas).</p>
+    <div class="smalltitle">Ukuran perangkat</div>
+    <div class="device-row" id="deviceChips"><button class="chip active" data-device="iphone15">iPhone 15</button><button class="chip" data-device="proMax">Pro Max</button><button class="chip" data-device="compact">Compact</button></div>
+    <div class="smalltitle">Tampilan</div>
+    <div class="device-row" id="wallpaperChips"><button class="chip active" data-wallpaper="default">Aurora</button><button class="chip" data-wallpaper="sunset">Sunset</button><button class="chip" data-wallpaper="ocean">Ocean</button><button class="chip" data-wallpaper="black">Dark</button></div>
+    <div class="smalltitle">Shortcut app di Home Screen</div>
+    <p class="hint">Atur URL masing-masing aplikasi pada panel sebelah kanan. Shortcut hanya disimpan di browser laptop ini.</p>
+    <div class="row" style="margin-top:15px"><span class="app-badge">100% HTML / CSS / JS</span></div>
+  </aside>
+  <main class="center">
+    <div class="topline"><div class="online"><span class="dot"></span> SIMULATOR AKTIF</div><div><span id="deviceInfo">iPhone 15 · 393 × 852</span></div></div>
+    <div class="popup-top"><span>◈ FIRMAN iOS LAB</span><div class="row"><button id="popupHome" title="Home"><svg class="icon sm"><use href="#i-home"/></svg></button><button id="popupRefresh" title="Refresh"><svg class="icon sm"><use href="#i-refresh"/></svg></button><button id="popupOpen" title="Buka link di browser asli"><svg class="icon sm"><use href="#i-external"/></svg></button></div></div>
+    <div class="workspace" id="workspace">
+      <div class="phone-holder" id="phoneHolder">
+        <div class="phone" id="phone">
+          <div class="screen" id="screen">
+            <div class="wallpaper" id="wallpaper"></div>
+            <div class="statusbar" id="statusbar"><span id="statusTime">09.41</span><div class="status-right"><svg viewBox="0 0 20 15" fill="currentColor"><path d="M1 13h3V9H1zm5 0h3V6H6zm5 0h3V3h-3zm5 0h3V0h-3z"/></svg><svg class="icon sm"><use href="#i-wifi"/></svg><svg class="icon sm" style="width:25px;height:15px"><use href="#i-battery"/></svg></div></div>
+            <div class="island" id="island" title="Buka Control Center"><span class="camera-dot"></span></div>
+            <div class="home-area" id="homeArea">
+              <div class="home-date" id="homeDate">Jumat, 16 Oktober</div><div class="home-clock" id="homeClock">09.41</div>
+              <div class="widgetcard"><div><strong>FIRMAN Lab</strong><small>Semua app kerja,<br>di satu layar.</small></div><div class="weather">☁️</div></div>
+              <div class="app-grid">
+                <button class="app-icon" data-app="safari"><span class="app-graphic safari"><svg class="icon"><use href="#i-compass"/></svg></span><span class="app-label">Safari</span></button>
+                <button class="app-icon" data-app="asta"><span class="app-graphic asta">🚚</span><span class="app-label">ASTA Pool</span></button>
+                <button class="app-icon" data-app="dony"><span class="app-graphic dony">📋</span><span class="app-label">Lapor Dony</span></button>
+                <button class="app-icon" data-app="near"><span class="app-graphic near">📍</span><span class="app-label">Nearby</span></button>
+                <button class="app-icon" data-app="jumat"><span class="app-graphic dony">🧰</span><span class="app-label">Jumat Bersih</span></button>
+                <button class="app-icon" data-app="notes"><span class="app-graphic notes">📝</span><span class="app-label">Catatan</span></button>
+                <button class="app-icon" data-app="links"><span class="app-graphic links">🔗</span><span class="app-label">Favorit</span></button>
+                <button class="app-icon" data-app="settings"><span class="app-graphic settings"><svg class="icon"><use href="#i-gear"/></svg></span><span class="app-label">Pengaturan</span></button>
+                <button class="app-icon" data-app="help"><span class="app-graphic help">?</span><span class="app-label">Panduan</span></button>
+              </div>
+              <div class="dots">● ○</div>
+              <div class="dock">
+                <button class="app-icon" data-app="safari"><span class="app-graphic safari"><svg class="icon"><use href="#i-compass"/></svg></span><span class="app-label">Safari</span></button>
+                <button class="app-icon" data-app="asta"><span class="app-graphic asta">🚚</span><span class="app-label">ASTA</span></button>
+                <button class="app-icon" data-app="near"><span class="app-graphic near">📍</span><span class="app-label">Nearby</span></button>
+                <button class="app-icon" data-app="settings"><span class="app-graphic settings"><svg class="icon"><use href="#i-gear"/></svg></span><span class="app-label">Pengaturan</span></button>
+              </div>
+            </div>
+            <section class="browser" id="browser">
+              <div class="browser-toolbar"><form class="browser-address" id="phoneUrlForm"><svg class="icon sm" style="color:#64748b"><use href="#i-globe"/></svg><input id="phoneUrl" placeholder="Cari atau masukkan URL" autocomplete="off" spellcheck="false"><button type="submit" aria-label="Buka URL">→</button></form></div>
+              <div class="browser-body"><div class="safari-start" id="safariStart"><div style="font-size:53px">🧭</div><h2>Safari</h2><p>Masukkan alamat aplikasi Firebase atau web yang ingin kamu uji. Jika situs tidak dapat ditampilkan di sini, gunakan tombol buka tab asli.</p><button class="safari-start-btn" data-safari-action="asta">🚚 &nbsp; ASTA Vehicle Pool</button><button class="safari-start-btn" data-safari-action="dony">📋 &nbsp; Lapor Mas Dony</button><button class="safari-start-btn" data-safari-action="near">📍 &nbsp; Anteraja Nearby</button><button class="safari-start-btn" data-safari-action="jumat">🧰 &nbsp; Jumat Bersih (Web App)</button><button class="safari-start-btn" data-safari-action="links">🔖 &nbsp; Buka Favorit</button></div><iframe id="webFrame" title="Preview aplikasi web" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write" style="display:none"></iframe><div class="browser-error" id="browserError"><div style="font-size:44px">🌐</div><h3>Website tidak dapat ditampilkan?</h3><p>Beberapa situs melarang tampil di iframe demi keamanan. Klik Buka Asli untuk menjalankannya di browser secara langsung.</p><button class="native-btn" id="errorExternal">Buka Website Asli ↗</button></div></div>
+              <div class="browser-actions"><button id="browserBack" title="Kembali"><svg class="icon lg"><use href="#i-chevron"/></svg></button><button id="browserReload" title="Muat ulang"><svg class="icon lg"><use href="#i-refresh"/></svg></button><button id="browserHome" title="Home Screen"><svg class="icon lg"><use href="#i-home"/></svg></button><button id="browserShare" title="Buka di browser asli"><svg class="icon lg"><use href="#i-external"/></svg></button><button id="browserBookmark" title="Simpan favorit"><svg class="icon lg"><use href="#i-bookmark"/></svg></button></div>
+            </section>
+            <section class="native-app" id="nativeApp"><div class="native-header"><button class="back-app" id="nativeBack"><svg class="icon sm"><use href="#i-chevron"/></svg> Home</button><strong id="nativeTitle">Pengaturan</strong></div><div class="native-content" id="nativeContent"></div></section>
+            <div class="cc-panel" id="controlCenter"><div class="cc-title">Control Center</div><div class="cc-grid"><div class="cc-tile"><svg class="icon lg"><use href="#i-wifi"/></svg><b>Wi-Fi · Simulasi</b></div><div class="cc-tile"><div style="font-size:25px">☀️</div><b>Brightness · Simulasi</b></div><div class="cc-tile"><div style="font-size:24px">🔋</div><b>Battery · Simulasi</b></div><div class="cc-tile"><svg class="icon lg"><use href="#i-smartphone"/></svg><b>iPhone · Web Mode</b></div></div><button class="cc-close" id="closeCc">Tutup Control Center</button></div>
+            <div class="screen-toast" id="screenToast"></div>
+            <button class="home-indicator" id="homeIndicator" aria-label="Kembali ke layar utama"></button>
           </div>
         </div>
-        <div class="speed-limits"><span>0 KM/H</span><span>MAX DISPLAY 160</span></div>
-        <div class="speed-footer">
-          <div><div class="card-title">MODE</div><strong id="modeLabel">READY</strong></div>
-          <div style="text-align:right"><div class="card-title">ACCURACY</div><strong id="accuracy">—</strong></div>
-        </div>
-      </section>
-
-      <section class="data-grid" aria-label="Metrik perjalanan">
-        <div class="card metric"><span class="metric-label">Trip Time</span><div><span class="metric-value value-cyan" id="duration">00:00:00</span></div></div>
-        <div class="card metric"><span class="metric-label">Distance</span><div><span class="metric-value" id="distance">0.00</span><span class="metric-unit">KM</span></div></div>
-        <div class="card metric"><span class="metric-label">Average Speed</span><div><span class="metric-value" id="average">0</span><span class="metric-unit">KM/H</span></div></div>
-        <div class="card metric"><span class="metric-label">Fuel Used (Est.)</span><div><span class="metric-value value-amber" id="fuel">0.00</span><span class="metric-unit">L</span></div></div>
-        <div class="card metric" style="grid-column:1 / -1;min-height:120px"><span class="metric-label">Estimated Fuel Cost</span><div><span class="metric-value value-green" id="cost">Rp0</span></div></div>
-      </section>
-
-      <aside class="side">
-        <section class="card nav-card">
-          <div class="card-title">NAVIGATION</div>
-          <h2>Where to next?</h2>
-          <p>Masukkan tujuan, lalu buka petunjuk arah melalui Google Maps.</p>
-          <form id="navigationForm" class="stack">
-            <div><label for="destination">DESTINASI</label><input id="destination" type="text" autocomplete="off" placeholder="Contoh: Kantor, Monas, Makassar" maxlength="250" required></div>
-            <button class="button" type="submit">↗ NAVIGATE WITH GOOGLE MAPS</button>
-          </form>
-        </section>
-        <section class="card link-card">
-          <span class="link-icon" aria-hidden="true">↗</span>
-          <h2>Your Web App, one click away.</h2>
-          <p>Buka Google Apps Script yang sudah dihubungkan ke Firman.OS. Login dan akses mengikuti pengaturan aplikasi tersebut.</p>
-          <a class="button primary" href="https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec" target="_blank" rel="noopener noreferrer">↗ OPEN GOOGLE APPS SCRIPT</a>
-        </section>
-        <section class="card">
-          <div class="card-title" style="margin-bottom:14px">RIDE CONTROL</div>
-          <div class="stack">
-            <button id="startBtn" class="button primary" type="button">▶ START GPS RIDE</button>
-            <button id="demoBtn" class="button" type="button">◉ TRY DEMO MODE</button>
-            <button id="stopBtn" class="button stop" type="button" disabled>■ END RIDE</button>
-          </div>
-          <p class="muted" id="rideHint" style="font-size:12px;margin:13px 0 0" aria-live="polite">GPS memerlukan izin lokasi dan perangkat yang mendukung. Mode demo adalah simulasi, bukan data GPS nyata.</p>
-        </section>
-      </aside>
-    </main>
-
-    <div class="bottom">
-      <section class="card bottom-card">
-        <div class="section-head"><div><div class="card-title">PREFERENCES</div><h2>Fuel estimation</h2></div><span class="chip">SAVED ON THIS DEVICE</span></div>
-        <div class="field-grid">
-          <div><label for="efficiency">EFISIENSI BBM (KM/L)</label><input id="efficiency" type="number" min="1" max="200" step="0.1" inputmode="decimal" value="40"></div>
-          <div><label for="fuelPrice">HARGA BBM (RP/L)</label><input id="fuelPrice" type="number" min="1" max="1000000" step="100" inputmode="numeric" value="10000"></div>
-        </div>
-        <div class="notice"><strong>Informasi:</strong> Perhitungan konsumsi dan biaya BBM adalah estimasi berdasarkan angka di atas. Di laptop, lokasi biasanya kurang akurat dan kecepatan GPS mungkin tidak tersedia. Gunakan Chrome pada perangkat GPS untuk pelacakan nyata.</div>
-      </section>
-      <section class="card bottom-card">
-        <div class="section-head">
-          <div><div class="card-title">LOCAL TRIP LOG</div><h2>Recent rides</h2></div>
-          <button id="clearHistory" class="button" type="button" style="padding:8px 11px">CLEAR</button>
-        </div>
-        <ul id="history" aria-live="polite"><li class="muted" style="font-size:12px;padding-top:16px">Belum ada perjalanan tersimpan.</li></ul>
-      </section>
+      </div>
     </div>
-
-    <footer>
-      <span>© Firman.OS · Web V1.0 · Semua data perjalanan disimpan lokal di browser ini.</span>
-      <span><a href="https://github.com/firmansyahachmad/Firman-OS" target="_blank" rel="noopener noreferrer">GitHub source</a> · <a href="#top" id="backTop">Back to top ↑</a></span>
-    </footer>
-  </div>
-  <div id="toast" class="toast" role="status" hidden></div>
-
-  <script>
-    "use strict";
-    (function () {
-      const $ = (id) => document.getElementById(id);
-      const storeKey = "firman-os-web-v1";
-      const idr = new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0});
-      const safeRead = () => { try { const data = JSON.parse(localStorage.getItem(storeKey) || "{}"); return data && typeof data === "object" ? data : {}; } catch (_) { return {}; } };
-      const saved = safeRead();
-      const settings = { efficiency: validNumber(saved.efficiency,40,1,200), fuelPrice: validNumber(saved.fuelPrice,10000,1,1000000) };
-      let history = Array.isArray(saved.history) ? saved.history.slice(0,8) : [];
-      let ride = null, watchId = null, tickId = null, lastFix = null, toastTimeout = null;
-
-      function validNumber(v, defaultValue, min, max) {
-        const n = Number(v);
-        return Number.isFinite(n) && n >= min && n <= max ? n : defaultValue;
-      }
-      function persist() {
-        try {localStorage.setItem(storeKey, JSON.stringify({efficiency:settings.efficiency,fuelPrice:settings.fuelPrice,history:history}));}
-        catch (_) {showToast("Penyimpanan lokal browser tidak tersedia.");}
-      }
-      function showToast(message) {
-        $("toast").textContent = message;
-        $("toast").hidden = false;
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => { $("toast").hidden = true; }, 4600);
-      }
-      function setGps(status, kind) {
-        $("gpsStatus").textContent = status;
-        $("gpsDot").className = "dot" + (kind ? " " + kind : "");
-      }
-      function setRideStatus(status, kind) {
-        $("rideStatus").textContent = status;
-        $("rideDot").className = "dot" + (kind ? " " + kind : "");
-      }
-      function durationText(seconds) {
-        const s = Math.max(0,Math.floor(seconds));
-        return [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map((x)=>String(x).padStart(2,"0")).join(":");
-      }
-      function elapsed() { return ride ? (Date.now() - ride.startedAt) / 1000 : 0; }
-      function render() {
-        const km = ride ? ride.distanceKm : 0;
-        const sec = elapsed();
-        const kmh = ride ? ride.speed : 0;
-        const fuel = km / settings.efficiency;
-        $("speedValue").textContent = String(Math.round(kmh));
-        $("gauge").style.setProperty("--progress", (Math.min(160,Math.max(0,kmh)) / 160 * 290) + "deg");
-        $("gauge").setAttribute("aria-label","Kecepatan " + Math.round(kmh) + " kilometer per jam");
-        $("duration").textContent = durationText(sec);
-        $("distance").textContent = km.toFixed(2);
-        $("average").textContent = sec > 0 ? String(Math.round(km / (sec / 3600))) : "0";
-        $("fuel").textContent = fuel.toFixed(2);
-        $("cost").textContent = idr.format(fuel * settings.fuelPrice);
-        $("startBtn").disabled = Boolean(ride);
-        $("demoBtn").disabled = Boolean(ride);
-        $("stopBtn").disabled = !ride;
-        $("modeLabel").textContent = ride ? (ride.mode === "demo" ? "SIMULATION" : "LIVE GPS") : "READY";
-        $("modeLabel").style.color = ride && ride.mode === "demo" ? "var(--amber)" : "var(--text)";
-      }
-      function resetTimer() {
-        if (tickId !== null) clearInterval(tickId);
-        tickId = setInterval(() => {
-          if (!ride) return;
-          if (ride.mode === "demo") {
-            const now = Date.now();
-            const dt = Math.max(0,Math.min(2,(now - ride.lastDemoAt)/1000));
-            ride.lastDemoAt = now;
-            ride.speed = 42 + Math.sin((now - ride.startedAt)/4200) * 12;
-            ride.distanceKm += ride.speed * dt / 3600;
-          }
-          render();
-        },1000);
-      }
-      function startRide(mode) {
-        if (ride) return;
-        ride = { mode:mode, startedAt:Date.now(), distanceKm:0, speed:0, lastDemoAt:Date.now() };
-        lastFix = null;
-        $("accuracy").textContent = "—";
-        if (mode === "demo") {
-          setGps("DEMO DATA","warn");
-          setRideStatus("SIMULATING","warn");
-          $("rideHint").textContent = "MODE DEMO AKTIF — kecepatan dan jarak adalah simulasi, bukan posisi GPS nyata.";
-        } else {
-          setGps("ACQUIRING GPS","warn");
-          setRideStatus("RIDE ACTIVE","ok");
-          $("rideHint").textContent = "Sedang membaca lokasi. Izinkan akses lokasi bila diminta Chrome.";
-          if (!("geolocation" in navigator)) {
-            setGps("NO GPS SUPPORT","bad");
-            $("rideHint").textContent = "Browser/perangkat ini tidak mendukung geolokasi. Coba mode demo.";
-          } else {
-            watchId = navigator.geolocation.watchPosition(onLocation, onLocationError, {
-              enableHighAccuracy:true, maximumAge:1000, timeout:15000
-            });
-          }
-        }
-        resetTimer();
-        render();
-      }
-      function radians(n) {return n * Math.PI / 180;}
-      function metersBetween(a,b) {
-        const R = 6371000;
-        const dLat = radians(b.latitude-a.latitude);
-        const dLon = radians(b.longitude-a.longitude);
-        const q = Math.sin(dLat/2)**2 + Math.cos(radians(a.latitude))*Math.cos(radians(b.latitude))*Math.sin(dLon/2)**2;
-        return 2 * R * Math.atan2(Math.sqrt(q),Math.sqrt(1-q));
-      }
-      function onLocation(position) {
-        if (!ride || ride.mode !== "live") return;
-        const coords = position.coords;
-        const fix = {latitude:coords.latitude,longitude:coords.longitude,accuracy:coords.accuracy,time:position.timestamp};
-        const accuracy = Number(coords.accuracy);
-        $("accuracy").textContent = Number.isFinite(accuracy) ? "±" + Math.round(accuracy) + " M" : "—";
-        if (!Number.isFinite(accuracy) || accuracy > 100) {
-          setGps("LOW ACCURACY","warn");
-          $("rideHint").textContent = "Akurasi lokasi rendah. Jarak tidak ditambahkan sampai GPS membaik.";
-          lastFix = null;
-          ride.speed = 0;
-          render();
-          return;
-        }
-        setGps("GPS CONNECTED","ok");
-        $("rideHint").textContent = "GPS aktif. Jarak dihitung dari perpindahan lokasi yang valid.";
-        if (lastFix && fix.time > lastFix.time) {
-          const distM = metersBetween(lastFix,fix);
-          const dt = (fix.time-lastFix.time)/1000;
-          const sampleSpeed = distM/dt*3.6;
-          if (distM >= Math.max(5, (accuracy + lastFix.accuracy)*0.15) && sampleSpeed <= 180) {
-            ride.distanceKm += distM/1000;
-          }
-          if (sampleSpeed > 180) {lastFix = fix; return;}
-          if (Number.isFinite(coords.speed) && coords.speed >= 0) ride.speed = Math.min(coords.speed*3.6,180);
-          else ride.speed = sampleSpeed < 2.5 ? 0 : sampleSpeed;
-        } else if (Number.isFinite(coords.speed) && coords.speed >= 0) {
-          ride.speed = Math.min(coords.speed*3.6,180);
-        }
-        lastFix = fix;
-        render();
-      }
-      function onLocationError(error) {
-        if (!ride || ride.mode !== "live") return;
-        setGps(error.code === 1 ? "GPS DENIED" : "GPS UNAVAILABLE","bad");
-        $("rideHint").textContent = error.code === 1 ? "Izin lokasi ditolak. Buka pengaturan lokasi Chrome, atau pilih mode demo." : "Posisi GPS belum tersedia. Periksa lokasi Windows atau gunakan mode demo.";
-        ride.speed = 0;
-        render();
-      }
-      function stopRide() {
-        if (!ride) return;
-        const summary = {date:new Date().toISOString(),sec:Math.floor(elapsed()),km:ride.distanceKm,mode:ride.mode};
-        if (watchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(watchId);
-        watchId = null;
-        if (tickId !== null) clearInterval(tickId);
-        tickId = null;
-        ride = null;
-        lastFix = null;
-        setRideStatus("STANDBY","");
-        setGps("GPS READY","");
-        $("rideHint").textContent = "Perjalanan berakhir. Mulai GPS Ride atau pilih mode demo untuk sesi baru.";
-        $("accuracy").textContent = "—";
-        if (summary.sec > 0) {
-          history.unshift(summary);
-          history = history.slice(0,8);
-          persist();
-          renderHistory();
-          showToast("Perjalanan tersimpan di browser ini.");
-        }
-        render();
-      }
-      function renderHistory() {
-        const list = $("history");
-        list.replaceChildren();
-        if (!history.length) {
-          const empty = document.createElement("li");
-          empty.className = "muted";
-          empty.style.cssText = "font-size:12px;padding-top:16px";
-          empty.textContent = "Belum ada perjalanan tersimpan.";
-          list.appendChild(empty);
-          return;
-        }
-        history.slice(0,3).forEach((item) => {
-          const li = document.createElement("li");
-          li.className = "history-row";
-          const left = document.createElement("div"), right = document.createElement("div");
-          const label = document.createElement("strong");
-          const small = document.createElement("small");
-          const date = new Date(item.date);
-          label.textContent = item.mode === "demo" ? "DEMO RIDE" : "GPS RIDE";
-          small.textContent = (Number.isNaN(date.getTime()) ? "Tanggal tidak diketahui" : date.toLocaleString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})) + " · " + durationText(item.sec);
-          right.textContent = validNumber(item.km,0,0,100000).toFixed(2) + " km";
-          left.append(label,small);
-          li.append(left,right);
-          list.appendChild(li);
-        });
-      }
-      function applySetting(id,key,min,max) {
-        const input = $(id);
-        const n = Number(input.value);
-        if (!Number.isFinite(n) || n < min || n > max) {
-          input.value = String(settings[key]);
-          showToast("Nilai " + (key === "efficiency" ? "efisiensi" : "harga BBM") + " tidak valid.");
-          return;
-        }
-        settings[key] = n;
-        persist();
-        render();
-      }
-      $("efficiency").value = String(settings.efficiency);
-      $("fuelPrice").value = String(settings.fuelPrice);
-      $("efficiency").addEventListener("change",()=>applySetting("efficiency","efficiency",1,200));
-      $("fuelPrice").addEventListener("change",()=>applySetting("fuelPrice","fuelPrice",1,1000000));
-      $("startBtn").addEventListener("click",()=>startRide("live"));
-      $("demoBtn").addEventListener("click",()=>startRide("demo"));
-      $("stopBtn").addEventListener("click",stopRide);
-      $("clearHistory").addEventListener("click",()=> {
-        if (!history.length) return;
-        if (!confirm("Hapus seluruh riwayat perjalanan yang disimpan di browser ini?")) return;
-        history = []; persist(); renderHistory(); showToast("Riwayat perjalanan dihapus.");
-      });
-      $("navigationForm").addEventListener("submit",(event)=>{
-        event.preventDefault();
-        const dest = $("destination").value.trim();
-        if (!dest) {showToast("Masukkan tujuan terlebih dahulu.");return;}
-        const url = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(dest) + "&travelmode=driving";
-        window.open(url,"_blank","noopener,noreferrer");
-      });
-      function updateClock() {
-        $("clock").textContent = new Intl.DateTimeFormat("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date());
-      }
-      updateClock();
-      setInterval(updateClock,30000);
-      renderHistory();
-      render();
-    }());
-  </script>
+    <div class="device-footer">iOS-style interface · Browser simulation, bukan emulator iOS asli · Klik Dynamic Island untuk Control Center</div>
+  </main>
+  <aside class="panel right-panel">
+    <div class="section"><div class="smalltitle" style="margin-top:0">Shortcuts aplikasi kerja</div><div class="quicklist" id="shortcutList"></div><p class="hint">Klik ikon pensil untuk mengganti alamat URL. Belum ada link bawaan supaya tidak membuka proyek yang keliru.</p></div>
+    <div class="section"><div class="smalltitle" style="margin-top:0">Favorit / URL tersimpan</div><div id="bookmarkList" class="quicklist"></div><p class="hint" id="bookmarksEmpty">Belum ada favorit. Isi URL lalu klik ikon bookmark.</p></div>
+    <div class="section"><div class="smalltitle" style="margin-top:0">Aktivitas</div><div class="log" id="activityLog" aria-live="polite"></div><div class="row" style="margin-top:12px"><button class="btn small" id="resetBrowser"><svg class="icon sm"><use href="#i-home"/></svg> Reset tampilan</button><button class="btn small" id="clearData">Hapus URL tersimpan</button></div><p class="hint">Data URL hanya disimpan lokal pada browser ini. Jika penyimpanan dibatasi kantor, datanya mungkin tidak bertahan.</p></div>
+  </aside>
+</div>
+<script>
+(function(){'use strict';
+const KEY='firman_ios_lab_v5';
+const $=id=>document.getElementById(id) || (state.pipWindow && state.pipWindow.document.getElementById(id));
+const state={device:'iphone15',wallpaper:'default',links:{asta:'',dony:'',near:'',jumat:'https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec'},bookmarks:[],history:[],historyIndex:-1,currentUrl:'',currentApp:'home',pipWindow:null,pipOpen:false};
+const labels={asta:'ASTA Vehicle Pool',dony:'Lapor Mas Dony',near:'Anteraja Nearby',jumat:'Jumat Bersih · Google Apps Script'};
+const emojis={asta:'🚚',dony:'📋',near:'📍',jumat:'🧰'};
+const devices={iphone15:[393,852,.73],proMax:[430,932,.66],compact:[375,812,.75]};
+function q(s){return document.querySelector(s)}
+function all(s){return [...document.querySelectorAll(s)]}
+function safeStore(){try{localStorage.setItem(KEY,JSON.stringify({device:state.device,wallpaper:state.wallpaper,links:state.links,bookmarks:state.bookmarks}));return true}catch(e){return false}}
+function restore(){try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x){if(devices[x.device])state.device=x.device;if(['default','sunset','ocean','black'].includes(x.wallpaper))state.wallpaper=x.wallpaper;if(x.links&&typeof x.links==='object')for(const id of Object.keys(labels)) if(typeof x.links[id]==='string')state.links[id]=x.links[id];if(Array.isArray(x.bookmarks))state.bookmarks=x.bookmarks.filter(y=>y && typeof y.url==='string').slice(0,12)}}catch(e){}}
+function cleanUrl(raw){let u=(raw||'').trim();if(!u||/\s/.test(u)) return null;if(/^localhost(:\d+)?(\/|$)/i.test(u)||/^127\.0\.0\.1(:\d+)?(\/|$)/.test(u))u='http://'+u;else if(!/^https?:\/\//i.test(u))u='https://'+u;try{const v=new URL(u);if(!['http:','https:'].includes(v.protocol))return null;return v.href}catch(e){return null}}
+function el(tag,text,classname){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(classname)n.className=classname;return n}
+function log(message,type='info'){const panel=$('activityLog');if(!panel)return;const row=el('div',new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+' · '+message);row.className=type==='info'?'':type;panel.prepend(row);while(panel.children.length>22)panel.lastChild.remove()}
+let toastTimer;function toast(message){const t=$('screenToast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3000)}
+function applyVisual(){const [w,h,s]=devices[state.device];const holder=$('phoneHolder');holder.style.setProperty('--phoneW',w+'px');holder.style.setProperty('--phoneH',h+'px');holder.style.setProperty('--scale',String(s));const info=$('deviceInfo');if(info)info.textContent=state.device==='iphone15'?'iPhone 15 · 393 × 852':state.device==='proMax'?'iPhone Pro Max · 430 × 932':'iPhone Compact · 375 × 812';$('wallpaper').className='wallpaper'+(state.wallpaper==='default'?'':' '+state.wallpaper);all('[data-device]').forEach(e=>e.classList.toggle('active',e.dataset.device===state.device));all('[data-wallpaper]').forEach(e=>e.classList.toggle('active',e.dataset.wallpaper===state.wallpaper));safeStore()}
+function clock(){const now=new Date();const hhmm=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',hour12:false}).replace('.',':');$('statusTime').textContent=hhmm;$('homeClock').textContent=hhmm;$('homeDate').textContent=new Intl.DateTimeFormat('id-ID',{weekday:'long',day:'numeric',month:'long'}).format(now)}
+function showHome(){state.currentApp='home';$('browser').classList.remove('active');$('nativeApp').classList.remove('active');$('controlCenter').classList.remove('active');$('statusbar').classList.remove('darkstatus');$('homeIndicator').classList.remove('dark');log('Kembali ke Home Screen')}
+function showBrowser(){state.currentApp='safari';$('nativeApp').classList.remove('active');$('controlCenter').classList.remove('active');$('browser').classList.add('active');$('statusbar').classList.add('darkstatus');$('homeIndicator').classList.add('dark');$('phoneUrl').value=state.currentUrl||'';updateBrowserButtons()}
+function updateBrowserButtons(){$('browserBack').disabled=state.historyIndex<=0}
+function navigate(raw,{record=true}={}){const url=cleanUrl(raw);if(!url){toast('Masukkan URL https:// yang valid');log('URL tidak valid','warn');return false}state.currentUrl=url;$('linkBox').value=url;$('phoneUrl').value=url;showBrowser();$('safariStart').style.display='none';$('browserError').classList.remove('active');const f=$('webFrame');f.style.display='block';f.src=url;if(record){state.history=state.history.slice(0,state.historyIndex+1);state.history.push(url);state.historyIndex=state.history.length-1}updateBrowserButtons();log('Preview: '+url);toast('Memuat website… Jika kosong, coba tombol ↗');return true}
+function launchApp(id){if(id==='jumat'){openExternal(state.links.jumat);return}if(id==='safari'){showBrowser();log('Safari dibuka');return}if(Object.hasOwn(labels,id)){if(state.links[id])navigate(state.links[id]);else{showNative('setup',id);toast('Atur link '+labels[id]+' dahulu')}return}if(id==='links'){showNative('links');return}showNative(id)}
+function openExternal(raw){const url=cleanUrl(raw||state.currentUrl||$('linkBox').value);if(!url){toast('Masukkan URL dahulu');return}const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';document.body.appendChild(a);a.click();a.remove();log('Meminta browser membuka website asli (jika diizinkan)')}
+function saveBookmark(raw){const url=cleanUrl(raw||state.currentUrl||$('linkBox').value);if(!url){toast('Masukkan URL valid dahulu');return}let hostname;try{hostname=new URL(url).hostname}catch(e){hostname='Aplikasi web'}if(state.bookmarks.some(b=>b.url===url)){toast('Link sudah ada di favorit');return}state.bookmarks.unshift({name:hostname,url});state.bookmarks=state.bookmarks.slice(0,12);safeStore();drawBookmarks();toast('Disimpan ke Favorit');log('Favorit ditambahkan: '+hostname)}
+function setShortcut(id,raw){const url=cleanUrl(raw);if(!url){toast('URL tidak valid');return}state.links[id]=url;safeStore();drawShortcuts();toast(labels[id]+' sudah disimpan');log('Shortcut diperbarui: '+labels[id])}
+function promptShortcut(id){const value=prompt('Masukkan link https:// untuk '+labels[id]+':',state.links[id]||'');if(value!==null)setShortcut(id,value)}
+function drawShortcuts(){const p=$('shortcutList');if(!p)return;p.replaceChildren();for(const id of Object.keys(labels)){const item=el('div',undefined,'quickitem');const icon=el('div',emojis[id],'quickitem-icon');const data=el('div',undefined,'quickitem-text');data.append(el('strong',labels[id]),el('span',state.links[id]||'Belum ada URL'));const edit=el('button','✎','iconbtn');edit.title='Edit link';edit.addEventListener('click',()=>promptShortcut(id));item.append(icon,data,edit);data.style.cursor='pointer';data.onclick=()=>launchApp(id);p.append(item)}}
+function drawBookmarks(){const p=$('bookmarkList');if(!p)return;p.replaceChildren();$('bookmarksEmpty').style.display=state.bookmarks.length?'none':'block';state.bookmarks.forEach((b,i)=>{const item=el('div',undefined,'quickitem');const ico=el('div','🌐','quickitem-icon');const data=el('div',undefined,'quickitem-text');data.append(el('strong',b.name),el('span',b.url));data.style.cursor='pointer';data.onclick=()=>navigate(b.url);const del=el('button','×','iconbtn');del.title='Hapus favorit';del.onclick=()=>{state.bookmarks.splice(i,1);safeStore();drawBookmarks()};item.append(ico,data,del);p.append(item)})}
+function showNative(type,selectedId){state.currentApp='native';$('browser').classList.remove('active');$('controlCenter').classList.remove('active');$('nativeApp').classList.add('active');$('statusbar').classList.add('darkstatus');$('homeIndicator').classList.add('dark');const p=$('nativeContent');p.replaceChildren();const title=$('nativeTitle');let h,p1;
+ if(type==='setup'){title.textContent='Hubungkan App';h=el('h2','Hubungkan '+labels[selectedId]);p1=el('p','Masukkan URL web app yang sudah kamu deploy, misalnya dari Firebase Hosting atau website resmi proyek.');p.append(h,p1);const inp=el('input',undefined,'native-field');inp.placeholder='https://project.web.app';inp.value=state.links[selectedId]||'';p.append(inp);const button=el('button','Simpan & Buka Aplikasi','native-btn');button.onclick=()=>{const u=cleanUrl(inp.value);if(u){setShortcut(selectedId,u);navigate(u)}else toast('URL tidak valid')};p.append(button);return}
+ if(type==='settings'){title.textContent='Pengaturan';p.append(el('h2','Pengaturan'));const block=el('div',undefined,'native-list');for(const [label,value] of [['Mode','Simulasi web iOS'],['Perangkat',state.device],['Penyimpanan','Lokal browser'],['Koneksi iPhone Asli','Tidak terhubung']]){const b=el('button',label);b.append(el('span',value));block.append(b)}p.append(block,el('p','Ini adalah simulator antarmuka iPhone untuk menguji web app; tidak mengendalikan iPhone fisik dan bukan iOS asli.'))}
+ else if(type==='notes'){title.textContent='Catatan';p.append(el('h2','Catatan Pengujian'),el('p','Tuliskan temuan saat mengetes tampilan aplikasi di bawah. Catatan ini tidak dikirim ke server.'));const ta=el('textarea');ta.style.cssText='width:100%;height:280px;padding:12px;border:1px solid #e0e5ed;border-radius:14px;background:#fff;color:#1b2b42;font:14px inherit;resize:none';try{ta.value=localStorage.getItem(KEY+'_notes')||''}catch(e){}ta.placeholder='Contoh: tombol Check In terpotong di resolusi iPhone...';ta.oninput=()=>{try{localStorage.setItem(KEY+'_notes',ta.value)}catch(e){}};p.append(ta)}
+ else if(type==='links'){title.textContent='Favorit';p.append(el('h2','Favorit Kamu'));if(!state.bookmarks.length)p.append(el('p','Belum ada URL tersimpan. Simpan lewat ikon bookmark di Safari.'));else {const block=el('div',undefined,'native-list');state.bookmarks.forEach(b=>{const bt=el('button','🌐  '+b.name);bt.onclick=()=>navigate(b.url);block.append(bt)});p.append(block)}}
+ else{title.textContent='Panduan';p.append(el('h2','Cara Pakai'),el('p','1. Tempel URL dari Firebase Hosting atau website web app di kolom sebelah kiri atau Safari.'),el('p','2. Klik Buka di iPhone dan uji interaksi serta tampilan layar.'),el('p','3. Kalau tampilan putih/kosong atau ditolak, buka situs asli di browser. Beberapa website mencegah iframe demi keamanan.'),el('p','4. Gunakan Floating iPhone untuk popup. Di Chrome/Edge yang mendukung Document Picture-in-Picture, popup bisa Always on Top.'),el('p','5. Tidak ada koneksi atau kontrol ke iPhone fisik. Ikon perangkat, Wi-Fi dan baterai hanya simulasi.'))}}
+function showCc(){$('controlCenter').classList.add('active')}
+function bindButtons(){all('[data-app]').forEach(b=>b.addEventListener('click',()=>launchApp(b.dataset.app)));all('[data-safari-action]').forEach(b=>b.addEventListener('click',()=>launchApp(b.dataset.safariAction)));$('goLink').onclick=()=>navigate($('linkBox').value);$('linkBox').onkeydown=e=>{if(e.key==='Enter')navigate(e.target.value)};$('saveLink').onclick=()=>saveBookmark($('linkBox').value);$('externalLink').onclick=()=>openExternal($('linkBox').value);$('phoneUrlForm').onsubmit=e=>{e.preventDefault();navigate($('phoneUrl').value)};$('browserHome').onclick=showHome;$('browserReload').onclick=()=>{if(state.currentUrl)navigate(state.currentUrl,{record:false})};$('browserShare').onclick=()=>openExternal(state.currentUrl);$('browserBookmark').onclick=()=>saveBookmark(state.currentUrl);$('browserBack').onclick=()=>{if(state.historyIndex>0){state.historyIndex--;navigate(state.history[state.historyIndex],{record:false})}};$('errorExternal').onclick=()=>openExternal(state.currentUrl);$('homeIndicator').onclick=showHome;$('nativeBack').onclick=showHome;$('island').onclick=showCc;$('closeCc').onclick=()=>$('controlCenter').classList.remove('active');$('resetBrowser').onclick=()=>{showHome();$('webFrame').src='about:blank';state.currentUrl='';state.history=[];state.historyIndex=-1};$('clearData').onclick=()=>{if(confirm('Hapus semua URL shortcut dan favorit yang tersimpan di browser ini?')){state.links={asta:'',dony:'',near:''};state.bookmarks=[];safeStore();drawShortcuts();drawBookmarks();log('Semua URL tersimpan dihapus','warn')}};all('[data-device]').forEach(b=>b.onclick=()=>{state.device=b.dataset.device;applyVisual()});all('[data-wallpaper]').forEach(b=>b.onclick=()=>{state.wallpaper=b.dataset.wallpaper;applyVisual()});$('popupHome').onclick=showHome;$('popupRefresh').onclick=()=>{if(state.currentUrl)navigate(state.currentUrl,{record:false})};$('popupOpen').onclick=()=>openExternal(state.currentUrl);$('openPip').onclick=openFloating;
+ const f=$('webFrame');f.addEventListener('load',()=>{if(state.currentUrl)log('Browser selesai memuat frame (isi situs mungkin diblokir)','warn')});f.addEventListener('error',()=>{$('browserError').classList.add('active');log('Frame gagal dimuat','warn')});
+}
+function floatingUrl(){const url=new URL(window.location.href);url.searchParams.set('popup','1');return url.href}
+async function openFloating(){if(state.pipWindow && !state.pipWindow.closed){state.pipWindow.focus();return}if(window.documentPictureInPicture && window.isSecureContext){try{const w=await window.documentPictureInPicture.requestWindow({width:420,height:710,disallowReturnToOpener:false});state.pipWindow=w;const styles=[...document.querySelectorAll('style')];styles.forEach(s=>w.document.head.appendChild(s.cloneNode(true)));w.document.body.appendChild(document.querySelector('svg.sprite').cloneNode(true));const body=w.document.body;body.className='pip-body';const holder=$('phoneHolder');const marker=el('div','iPhone dipindahkan ke jendela melayang. Tutup jendela untuk mengembalikannya.','hint');marker.id='pipPlaceholder';marker.style.cssText='max-width:230px;text-align:center;padding:25px';$('workspace').append(marker);body.append(holder);const note=el('div','FIRMAN iOS · Floating mode','pip-hint');body.append(note);w.addEventListener('pagehide',()=>{state.pipWindow=null;document.querySelector('#workspace').appendChild(holder);marker.remove();applyVisual();log('Floating Always on Top ditutup')},{once:true});log('Floating Always on Top aktif (Picture-in-Picture)');return}catch(e){log('PiP tidak tersedia: '+(e.message||'unsupported'),'warn')}}const win=window.open(floatingUrl(),'FIRMAN_iOS_Floating','popup=yes,width=425,height=775,resizable=yes,scrollbars=yes');if(!win){log('Popup diblokir. Izinkan pop-up dari browser.','warn');toast('Browser memblokir popup. Izinkan pop-up lalu coba lagi.')}else{log('Popup browser dibuka (tidak selalu di atas)');toast('Popup biasa dibuka. Mode ini tidak selalu di atas.')}}
+function autoAdjustPopup(){if(!document.body.classList.contains('popup-mode'))return;const h=window.innerHeight;const w=window.innerWidth;let scale=Math.min((h-70)/(devices[state.device][1]+18),(w-20)/(devices[state.device][0]+18),.82);scale=Math.max(.45,scale);$('phoneHolder').style.setProperty('--scale',String(scale));}
+function initialize(){restore();bindButtons();drawShortcuts();drawBookmarks();applyVisual();clock();setInterval(clock,15000);log('Simulator siap · tanpa instalasi');if(new URLSearchParams(location.search).get('popup')==='1'){document.body.classList.add('popup-mode');autoAdjustPopup();window.addEventListener('resize',autoAdjustPopup);log('Mode popup browser aktif')}else window.addEventListener('resize',()=>{});
+  // Keyboard home shortcut, only when not writing in a field.
+  document.addEventListener('keydown',e=>{if(e.key==='Escape' && !['INPUT','TEXTAREA'].includes(e.target.tagName)){if($('controlCenter').classList.contains('active'))$('controlCenter').classList.remove('active');else showHome()}})
+}
+initialize();
+})();
+</script>
 </body>
 </html>

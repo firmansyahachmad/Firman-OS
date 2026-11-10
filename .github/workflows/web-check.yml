@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'ride.html'
       - '.github/workflows/web-check.yml'
   workflow_dispatch:
 
@@ -12,28 +13,30 @@ jobs:
   validate-web:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Extract inline JavaScript and check page integrity
+      - name: Validate HTML pages
         run: |
           python3 - <<'PY'
           import re
           from pathlib import Path
-          html = Path('index.html').read_text(encoding='utf-8')
-          scripts = re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', html, re.DOTALL | re.IGNORECASE)
-          assert len(scripts) == 1, f'Expected one inline script, got {len(scripts)}'
-          assert '<!doctype html>' in html.lower()
-          assert 'id="startBtn"' in html and 'id="demoBtn"' in html and 'id="stopBtn"' in html
-          assert 'https://script.google.com/macros/s/AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec' in html
-          assert 'https://www.google.com/maps/dir/' in html
-          Path('/tmp/firman-os-inline.js').write_text(scripts[0], encoding='utf-8')
-          print('HTML page structure and Web App link verified')
+          for filename in ('index.html', 'ride.html'):
+              html=Path(filename).read_text(encoding='utf-8')
+              assert '<!doctype html>' in html.lower()
+              scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',html,re.DOTALL|re.IGNORECASE)
+              assert len(scripts)==1, (filename,len(scripts))
+              Path('/tmp/'+filename+'.js').write_text(scripts[0],encoding='utf-8')
+          floating=Path('index.html').read_text(encoding='utf-8')
+          ride=Path('ride.html').read_text(encoding='utf-8')
+          assert 'documentPictureInPicture.requestWindow' in floating
+          assert 'id="openPip"' in floating and 'data-app="jumat"' in floating
+          assert 'AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec' in floating
+          assert 'id="startBtn"' in ride
+          print('Two valid Firman.OS entry pages')
           PY
-      - name: Check JavaScript syntax
-        run: node --check /tmp/firman-os-inline.js
+      - name: JavaScript syntax check
+        run: |
+          node --check /tmp/index.html.js
+          node --check /tmp/ride.html.js
