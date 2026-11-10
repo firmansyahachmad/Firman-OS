@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#080d18">
 <meta name="description" content="Firman.OS Floating — simulator iPhone yang melayang di atas aplikasi Windows lewat Chrome Picture-in-Picture.">
-<title>Firman.OS Floating — iOS Simulator V6</title>
+<title>Firman.OS Floating — iOS Simulator V7</title>
 <style>
 :root{--bg:#080d18;--panel:#111b2c;--panel2:#152136;--line:#2a3a53;--muted:#93a4be;--text:#f6f8ff;--blue:#78afff;--accent:#a0b9ff;--phoneW:393px;--phoneH:852px;--scale:.73;--glass:rgba(12,19,35,.71);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% -20%,#253a65 0,transparent 48%),#080d18;color:var(--text);min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.42}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.sprite{display:none}.icon{width:19px;height:19px;vertical-align:middle;display:inline-block;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.icon.sm{width:16px;height:16px}.icon.lg{width:24px;height:24px}
@@ -32,7 +32,7 @@ body.pip-body{margin:0;display:flex;flex-direction:column;align-items:center;jus
 <svg class="sprite" xmlns="http://www.w3.org/2000/svg"><symbol id="i-smartphone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol><symbol id="i-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-9 9"/><path d="M19 13v6H5V5h6"/></symbol><symbol id="i-rotate" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13-6l2 2V3m0 5h-5M20 12a8 8 0 0 1-13 6l-2-2v5m0-5h5"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2 6M20 4v7h-7"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="m10 13 4-4M8 16H6a4 4 0 0 1 0-8h4M14 8h4a4 4 0 0 1 0 8h-4"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol><symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0M9 16a5 5 0 0 1 6 0M12 20h.01"/></symbol><symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="6" width="19" height="12" rx="3"/><path d="M23 10v4"/><rect x="4" y="8" width="14" height="8" rx="1" fill="currentColor" stroke="none"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V2m-5 5 5-5 5 5"/><path d="M5 12v9h14v-9"/></symbol><symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2c-6 7-6 13 0 20m0-20c6 7 6 13 0 20"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol></svg>
 <div class="shell">
   <aside class="panel left-panel">
-    <div class="brand"><div class="brand-symbol">◈</div><div><h1>FIRMAN.OS FLOATING</h1><p>V6 · Chrome Windows · No Installation</p></div></div>
+    <div class="brand"><div class="brand-symbol">◈</div><div><h1>FIRMAN.OS FLOATING</h1><p>V7 · Chrome Windows · No Installation</p></div></div>
     <div class="note"><strong>Mode aman untuk laptop kantor.</strong> Tidak perlu instal aplikasi atau menjalankan file .bat. Cukup buka HTML ini di Chrome atau Edge, selama diizinkan kebijakan IT.</div>
     <div class="smalltitle">Dashboard lainnya</div>
     <a class="btn block" href="./ride.html" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none">↗ Dashboard Speedometer</a>
@@ -86,7 +86,7 @@ body.pip-body{margin:0;display:flex;flex-direction:column;align-items:center;jus
             </div>
             <section class="browser" id="browser">
               <div class="browser-toolbar"><form class="browser-address" id="phoneUrlForm"><svg class="icon sm" style="color:#64748b"><use href="#i-globe"/></svg><input id="phoneUrl" placeholder="Cari atau masukkan URL" autocomplete="off" spellcheck="false"><button type="submit" aria-label="Buka URL">→</button></form><button class="frame-fallback-btn" type="button" id="frameMini" title="Buka halaman dalam jendela Chrome seukuran HP">▣ Mini</button><button class="frame-fallback-btn" type="button" id="frameFallback" title="Jika halaman diblokir, buka URL asli di tab Chrome">↗ Asli</button></div>
-              <div class="browser-body"><div class="safari-start" id="safariStart"><div style="font-size:53px">🧭</div><h2>Safari</h2><p>Masukkan alamat aplikasi Firebase atau web yang ingin kamu uji. Jika situs tidak dapat ditampilkan di sini, gunakan tombol buka tab asli.</p><button class="safari-start-btn" data-safari-action="asta">🚚 &nbsp; ASTA Vehicle Pool</button><button class="safari-start-btn" data-safari-action="dony">📋 &nbsp; Lapor Mas Dony</button><button class="safari-start-btn" data-safari-action="near">📍 &nbsp; Anteraja Nearby</button><button class="safari-start-btn" data-safari-action="jumat">🧰 &nbsp; Jumat Bersih (Web App)</button><button class="safari-start-btn" data-safari-action="links">🔖 &nbsp; Buka Favorit</button></div><iframe id="webFrame" title="Preview aplikasi web" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write" style="display:none"></iframe><div class="frame-rescue" id="frameRescue" role="status"><strong>Google Apps Script tidak tampil?</strong><p>Google dapat memblokir tampilan dalam iframe. Buka aplikasi asli di jendela Chrome seukuran HP agar login tetap berfungsi.</p><div class="rescue-buttons"><button type="button" class="rescue-primary" id="rescueMini">▣ Buka Jendela Mini</button><button type="button" id="rescueOriginal">↗ Tab Asli</button><button type="button" class="rescue-dismiss" id="rescueDismiss" aria-label="Tutup saran">×</button></div></div><div class="browser-error" id="browserError"><div style="font-size:44px">🌐</div><h3>Website tidak dapat ditampilkan?</h3><p>Beberapa situs melarang tampil di iframe demi keamanan. Klik Buka Asli untuk menjalankannya di browser secara langsung.</p><button class="native-btn" id="errorExternal">Buka Website Asli ↗</button></div></div>
+              <div class="browser-body"><div class="safari-start" id="safariStart"><div style="font-size:53px">🧭</div><h2>Safari</h2><p>Masukkan alamat aplikasi Firebase atau web yang ingin kamu uji. Jika situs tidak dapat ditampilkan di sini, gunakan tombol buka tab asli.</p><button class="safari-start-btn" data-safari-action="asta">🚚 &nbsp; ASTA Vehicle Pool</button><button class="safari-start-btn" data-safari-action="dony">📋 &nbsp; Lapor Mas Dony</button><button class="safari-start-btn" data-safari-action="near">📍 &nbsp; Anteraja Nearby</button><button class="safari-start-btn" data-safari-action="jumat">🧰 &nbsp; Jumat Bersih (Web App)</button><button class="safari-start-btn" data-safari-action="links">🔖 &nbsp; Buka Favorit</button></div><iframe id="webFrame" title="Preview aplikasi web" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write" style="display:none"></iframe><div class="frame-rescue" id="frameRescue" role="status"><strong>Jumat Bersih butuh jendela asli</strong><p>Google Apps Script tidak dibuka di dalam iframe. Pilih jendela mini agar form dan login berfungsi di Chrome.</p><div class="rescue-buttons"><button type="button" class="rescue-primary" id="rescueMini">▣ Buka Jendela Mini</button><button type="button" id="rescueOriginal">↗ Tab Asli</button><button type="button" class="rescue-dismiss" id="rescueDismiss" aria-label="Tutup saran">×</button></div></div><div class="browser-error" id="browserError"><div style="font-size:44px">🌐</div><h3>Website membutuhkan browser asli</h3><p>Google Apps Script tidak dapat dijalankan dengan andal di dalam layar iPhone berbasis iframe. Gunakan ▣ Mini atau Buka Website Asli.</p><button class="native-btn" id="errorExternal">Buka Website Asli ↗</button></div></div>
               <div class="browser-actions"><button id="browserBack" title="Kembali"><svg class="icon lg"><use href="#i-chevron"/></svg></button><button id="browserReload" title="Muat ulang"><svg class="icon lg"><use href="#i-refresh"/></svg></button><button id="browserHome" title="Home Screen"><svg class="icon lg"><use href="#i-home"/></svg></button><button id="browserShare" title="Buka di browser asli"><svg class="icon lg"><use href="#i-external"/></svg></button><button id="browserBookmark" title="Simpan favorit"><svg class="icon lg"><use href="#i-bookmark"/></svg></button></div>
             </section>
             <section class="native-app" id="nativeApp"><div class="native-header"><button class="back-app" id="nativeBack"><svg class="icon sm"><use href="#i-chevron"/></svg> Home</button><strong id="nativeTitle">Pengaturan</strong></div><div class="native-content" id="nativeContent"></div></section>
@@ -126,9 +126,67 @@ function clock(){const now=new Date();const hhmm=now.toLocaleTimeString('id-ID',
 function showHome(){state.currentApp='home';$('frameRescue').classList.remove('active');$('browser').classList.remove('active');$('nativeApp').classList.remove('active');$('controlCenter').classList.remove('active');$('statusbar').classList.remove('darkstatus');$('homeIndicator').classList.remove('dark');log('Kembali ke Home Screen')}
 function showBrowser(){state.currentApp='safari';$('nativeApp').classList.remove('active');$('controlCenter').classList.remove('active');$('browser').classList.add('active');$('statusbar').classList.add('darkstatus');$('homeIndicator').classList.add('dark');$('phoneUrl').value=state.currentUrl||'';updateBrowserButtons()}
 function updateBrowserButtons(){$('browserBack').disabled=state.historyIndex<=0}
-function navigate(raw,{record=true}={}){const url=cleanUrl(raw);if(!url){toast('Masukkan URL https:// yang valid');log('URL tidak valid','warn');return false}state.currentUrl=url;$('linkBox').value=url;$('phoneUrl').value=url;showBrowser();$('safariStart').style.display='none';$('browserError').classList.remove('active');const f=$('webFrame');f.style.display='block';f.src=url;if(record){state.history=state.history.slice(0,state.historyIndex+1);state.history.push(url);state.historyIndex=state.history.length-1}updateBrowserButtons();const googleApp=/^https:\/\/script\.google\.com\/macros\/s\//.test(url);$('frameRescue').classList.toggle('active',googleApp);log('Preview: '+url);toast(googleApp?'Google mungkin memblokir iframe. Pilih Buka Jendela Mini jika layar abu-abu.':'Memuat website… Jika kosong, coba tombol ↗');return true}
-function launchApp(id){if(id==='jumat'){if(state.links.jumat)navigate(state.links.jumat);else showNative('setup','jumat');return}if(id==='safari'){showBrowser();log('Safari dibuka');return}if(Object.hasOwn(labels,id)){if(state.links[id])navigate(state.links[id]);else{showNative('setup',id);toast('Atur link '+labels[id]+' dahulu')}return}if(id==='links'){showNative('links');return}showNative(id)}
-function openMini(raw){const url=cleanUrl(raw||state.currentUrl||$('linkBox').value);if(!url){toast('URL aplikasi belum tersedia');return}const popup=window.open(url,'FirmanOS_WebApp_Mini','popup=yes,width=455,height=820,left=160,top=110,resizable=yes,scrollbars=yes');if(popup){try{popup.focus()}catch(e){}log('Aplikasi asli dibuka dalam jendela Chrome seukuran HP (bukan Always on Top)');toast('Jendela mini dibuka. Untuk pin di atas aplikasi lain gunakan fitur Windows, jika tersedia.')}else{toast('Popup diblokir Chrome. Izinkan popup untuk Firman.OS atau gunakan ↗ Asli.');log('Popup jendela mini diblokir','warn')}}
+function navigate(raw,{record=true}={}) {
+  const url=cleanUrl(raw);
+  if(!url){toast('Masukkan URL https:// yang valid');log('URL tidak valid','warn');return false}
+  state.currentUrl=url;
+  $('linkBox').value=url;
+  $('phoneUrl').value=url;
+  showBrowser();
+  $('safariStart').style.display='none';
+  $('browserError').classList.remove('active');
+  const f=$('webFrame');
+  const googleApp=/^https:\/\/script\.google\.com\/macros\/s\//i.test(url);
+  if(googleApp){
+    // Google Apps Script needs a top-level browser window for reliable sign-in.
+    // Never load it into our cross-origin iframe: blocked frames look like a broken page.
+    f.src='about:blank';
+    f.style.display='none';
+    $('browserError').classList.add('active');
+    $('frameRescue').classList.add('active');
+    log('Google Apps Script: iframe dilewati, gunakan jendela mini','warn');
+    toast('Untuk Google Apps Script pilih ▣ Mini. Ini membuka portal asli tanpa iframe.');
+  } else {
+    $('frameRescue').classList.remove('active');
+    f.style.display='block';
+    f.src=url;
+    log('Preview: '+url);
+    toast('Memuat website… Jika kosong, coba tombol ↗');
+  }
+  if(record){
+    state.history=state.history.slice(0,state.historyIndex+1);
+    state.history.push(url);
+    state.historyIndex=state.history.length-1;
+  }
+  updateBrowserButtons();
+  return true;
+}
+function launchApp(id){if(id==='jumat'){if(state.links.jumat){state.currentUrl=state.links.jumat;openMini(state.links.jumat)}else showNative('setup','jumat');return}if(id==='safari'){showBrowser();log('Safari dibuka');return}if(Object.hasOwn(labels,id)){if(state.links[id])navigate(state.links[id]);else{showNative('setup',id);toast('Atur link '+labels[id]+' dahulu')}return}if(id==='links'){showNative('links');return}showNative(id)}
+function openMini(raw) {
+  const url=cleanUrl(raw||state.currentUrl||$('linkBox').value);
+  if(!url){toast('URL aplikasi belum tersedia');return false}
+  const features='popup=yes,width=455,height=820,left=160,top=100,resizable=yes,scrollbars=yes';
+  // Use the window where the actual click happens when the iPhone is in Document PiP.
+  // If its popup API is restricted, fall back to the opener window in the same click.
+  const hosts=[];
+  if(state.pipWindow && !state.pipWindow.closed) hosts.push(state.pipWindow);
+  hosts.push(window);
+  let popup=null;
+  for(const host of hosts){
+    try{ popup=host.open(url,'FirmanOS_JumatBersih_Mini',features); if(popup)break }catch(e){log('Browser menolak popup: '+e.message,'warn')}
+  }
+  if(popup){
+    try{popup.focus()}catch(e){}
+    log('Jumat Bersih dibuka sebagai halaman asli di jendela Chrome kecil');
+    toast('Portal Jumat Bersih dibuka di jendela mini Chrome (tanpa iframe).');
+    return true;
+  }
+  log('Popup Chrome diblokir. Izinkan popup atau buka tab asli.','warn');
+  toast('Popup diblokir. Izinkan pop-up untuk Firman.OS, atau gunakan tombol ↗ Asli.');
+  // Explicit fallback controls remain available inside the floating iPhone.
+  navigate(url,{record:false});
+  return false;
+}
 function openExternal(raw){const url=cleanUrl(raw||state.currentUrl||$('linkBox').value);if(!url){toast('Masukkan URL dahulu');return}const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';document.body.appendChild(a);a.click();a.remove();log('Meminta browser membuka website asli (jika diizinkan)')}
 function saveBookmark(raw){const url=cleanUrl(raw||state.currentUrl||$('linkBox').value);if(!url){toast('Masukkan URL valid dahulu');return}let hostname;try{hostname=new URL(url).hostname}catch(e){hostname='Aplikasi web'}if(state.bookmarks.some(b=>b.url===url)){toast('Link sudah ada di favorit');return}state.bookmarks.unshift({name:hostname,url});state.bookmarks=state.bookmarks.slice(0,12);safeStore();drawBookmarks();toast('Disimpan ke Favorit');log('Favorit ditambahkan: '+hostname)}
 function setShortcut(id,raw){const url=cleanUrl(raw);if(!url){toast('URL tidak valid');return}state.links[id]=url;safeStore();drawShortcuts();toast(labels[id]+' sudah disimpan');log('Shortcut diperbarui: '+labels[id])}

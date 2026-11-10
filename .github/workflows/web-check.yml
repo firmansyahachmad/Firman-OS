@@ -32,6 +32,8 @@ jobs:
           ride=Path('ride.html').read_text(encoding='utf-8')
           assert 'documentPictureInPicture.requestWindow' in floating
           assert 'id="openPip"' in floating and 'data-app="jumat"' in floating
+          assert 'openMini(state.links.jumat)' in floating
+          assert 'f.src=\'about:blank\'' in floating
           assert 'AKfycbzFf8sBJvlZJkIl4ornuOtQhx4OquXulbUdjuceo0bmrEa3vkj3I_4k7qThCrMYxX4U/exec' in floating
           assert 'id="startBtn"' in ride
           print('Two valid Firman.OS entry pages')
